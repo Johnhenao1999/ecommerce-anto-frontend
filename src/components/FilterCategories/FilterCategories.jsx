@@ -8,7 +8,7 @@ const FiltrosSubcategorias = ({ subcategorias, subcategoriaActiva, setSubcategor
 
     return (
         <aside className="filtros">
-            <h3>Filtros</h3>
+            <h3>Categorias</h3>
             <ul>
                 <li
                     className={!subcategoriaActiva ? 'active' : ''}

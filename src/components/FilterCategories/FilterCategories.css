@@ -4,7 +4,6 @@
     border-radius: 16px;
     padding: 24px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    font-family: 'Poppins', sans-serif;
   }
   
   .filtros h3 {
@@ -32,12 +31,12 @@
   
   .filtros li:hover {
     background-color: #f0f0f0;
-    color: #000;
+    color: #E92B63;
   }
   
   .filtros li.active {
     font-weight: 600;
-    color: #fff;
-    background-color: #d63384; /* tono rosa maquillaje */
+    background-color: #f6f6f6; /* tono rosa maquillaje */
+    color: #E92B63;
   }
   

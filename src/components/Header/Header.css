@@ -177,6 +177,7 @@
     .app-header-container {
       align-items: center;
       gap: 12px;
+      border-bottom: 2px solid #F6D2D1;
     }
   
     .hamburger-menu {

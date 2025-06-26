@@ -4,6 +4,7 @@ import data from '../utils/data.json';
 import Header from '../components/Header/Header';
 import FiltrosSubcategorias from '../components/FilterCategories/FilterCategories';
 import ProductCard from '../components/ProductCard/ProductCard';
+import Footer from '../components/Footer/Footer';
 import '../styles/category.css';
 
 const Categoria = () => {
@@ -56,6 +57,7 @@ const Categoria = () => {
           </div>
         </section>
       </main>
+      <Footer />
     </>
   );
 };
