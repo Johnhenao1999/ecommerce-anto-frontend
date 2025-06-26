@@ -1,0 +1,43 @@
+.promo-strip {
+  width: 100%;
+  height: 60px;
+  overflow: hidden;
+  background-color: #F7BDC9;
+  color: #000000;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 10px 0;
+  position: relative;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.promo-strip__inner {
+  display: flex;
+  width: max-content;
+  animation: scroll-left 30s linear infinite;
+  height: 100%;
+}
+
+.promo-strip__content {
+  display: flex;
+  gap: 36px;
+}
+
+.promo-strip__content span {
+  margin-right: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@keyframes scroll-left {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}

@@ -1,0 +1,22 @@
+body {
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .categoria-main {
+    display: flex;
+    padding: 24px;
+    gap: 32px;
+  }
+  
+  .categoria-productos {
+    flex: 1;
+  }
+  
+  .categoria-filtrado {
+    margin-bottom: 16px;
+    font-weight: 500;
+    color: #555;
+  }
+  
+
+  

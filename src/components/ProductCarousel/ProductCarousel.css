@@ -1,0 +1,76 @@
+/* Centra los bullets debajo del carrusel */
+.slick-dots {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+  /* El bullet inactivo */
+  .slick-dots li button:before {
+    font-size: 12px !important;
+  }
+  
+  /* El bullet activo */
+  .slick-dots li.slick-active button:before {
+    color: #e11d48 !important; /* Tu color principal (ej: rosa fuerte) */
+  }
+
+  .slick-dots li{
+    margin: 0 !important;
+  }
+  
+
+  .slick-slide > div {
+    padding: 0 12px; /* Ajusta a tu gusto */
+  }
+  
+  /* Compensa el padding en el contenedor para que no se desborde */
+  .slick-list {
+    margin: 0 -12px;
+  }
+
+  .slick-next:before
+  ,.slick-prev:before{
+    color: #E92B63 !important;
+    font-size: 36px !important; /* Cambia el color de la flecha derecha */
+  }
+
+  .slick-prev {
+    left: 0 !important; /* Ajusta la posición de la flecha izquierda */
+  }
+
+  .slick-next {
+    right: 0 !important; /* Ajusta la posición de la flecha derecha */
+  }
+
+  .slick-prev,
+  .slick-next {
+    z-index: 1; /* Asegura que las flechas estén por encima del contenido */
+
+  }
+
+  .mas-vendidos-carousel{
+    margin-bottom: 24px;
+  }
+  
+  .mas-vendidos-carousel h2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-align: center;
+    color: #091e42;
+    font-weight: bold;
+    position: relative;
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .mas-vendidos-carousel h2::before,
+  .mas-vendidos-carousel h2::after {
+    content: "";
+    flex: 1;
+    height: 0.5px;
+    background-color: #9393933b; /* Mismo color del texto o el que quieras */
+  }
+  

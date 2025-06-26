@@ -1,0 +1,116 @@
+.producto-detalle {
+    padding: 32px;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .producto-detalle-img {
+    flex: 1 1 300px;
+    max-width: 400px;
+    max-height: 400px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  
+  .producto-detalle-info {
+    flex: 1 1 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .producto-detalle-info h1 {
+    font-size: 2rem;
+    color: #E92B63;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .producto-detalle-info p {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  .producto-detalle-info strong {
+    font-size: 1.8rem;
+    color: #111;
+    margin-top: 8px;
+  }
+  
+  .producto-cantidad {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .producto-cantidad label {
+    font-weight: 500;
+  }
+  
+  .producto-cantidad input {
+    width: 60px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  
+  .btn-agregar {
+    background-color: #E92B63;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .btn-agregar:hover {
+    background-color: #b42c6e;
+  }
+
+  .producto-detalle-info .disponibilidad {
+    color: #129e20;
+    font-weight: 500;
+  }
+  
+  .referencia,
+  .categorias {
+    font-size: 0.95rem;
+    color: #555;
+  }
+  
+  .categorias span {
+    font-weight: 500;
+    color: #555;
+  }
+  
+  .beneficios {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    font-size: 0.95rem;
+    color: #333;
+  }
+  
+  .beneficios div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fafafa;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+  }
+  
+  
