@@ -22,7 +22,7 @@ const ProductCarousel = ({ productos = [], title = "Productos", className = "" }
       <h2>{title}</h2>
       <Slider {...settings}>
         {productos.map(producto => (
-          <ProductCard key={producto.id} producto={producto} />
+          <ProductCard key={producto._id} producto={producto} />
         ))}
       </Slider>
     </div>

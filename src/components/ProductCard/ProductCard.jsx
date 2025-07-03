@@ -9,11 +9,11 @@ const ProductCard = ({ producto }) => {
   return (
     <>
       <div className="producto-card">
-        <Link to={`/producto/${producto.id}`}>
+        <Link to={`/producto/${producto.slug}`}>
           <img src={producto.imagen} alt={producto.nombre} width={250} />
         </Link>
         <span>{producto.marca}</span>
-        <Link to={`/producto/${producto.id}`}>
+        <Link to={`/producto/${producto.slug}`}>
           <h3>{producto.nombre}</h3>
         </Link>
         <div className='container-button-price'>

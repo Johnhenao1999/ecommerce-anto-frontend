@@ -1,28 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import data from '../utils/data.json';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 import { useCart } from '../context/CartContext';
 import '../styles/productDetail.css';
+import { obtenerProducts } from '../services/categoriasService'; 
 
 const ProductoDetalle = () => {
   const { productoId } = useParams();
   const { agregarAlCarrito } = useCart();
   const [cantidad, setCantidad] = useState(1);
+  const [producto, setProducto] = useState(null);
 
-  let producto = null;
-
-  data.categorias.forEach(cat => {
-    if (cat.productos) {
-      producto = cat.productos.find(p => p.id === parseInt(productoId)) || producto;
-    }
-    if (cat.subcategorias) {
-      cat.subcategorias.forEach(sub => {
-        producto = sub.productos.find(p => p.id === parseInt(productoId)) || producto;
-      });
-    }
-  });
+  useEffect(() => {
+    const cargarProducto = async () => {
+      try {
+        const { categorias } = await obtenerProducts(); // ✅
+  
+        let encontrado = null;
+        categorias.forEach(cat => {
+          if (cat.productos) {
+            encontrado = cat.productos.find(p => p.slug === productoId) || encontrado;
+          }
+          if (cat.subcategorias) {
+            cat.subcategorias.forEach(sub => {
+              encontrado = sub.productos.find(p => p.slug === productoId) || encontrado;
+            });
+          }
+        });
+  
+        setProducto(encontrado);
+      } catch (err) {
+        console.error('Error al cargar producto', err);
+      }
+    };
+  
+    cargarProducto();
+  }, [productoId]);
 
   if (!producto) return <p>Producto no encontrado</p>;
 

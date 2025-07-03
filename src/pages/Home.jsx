@@ -1,18 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header/Header';
 import Hero from '../components/Hero/Hero';
 import PromoStrip from '../components/PromoStrip/PromoStrip';
-import data from '../utils/data.json';
 import ProductCarousel from '../components/ProductCarousel/ProductCarousel';
 import Newsletter from '../components/Newsletter/Newsletter';
 import Footer from '../components/Footer/Footer';
 import '../styles/home.css';
 import { motion } from 'framer-motion';
+import { obtenerProducts } from '../services/categoriasService'; // ✅ Asegúrate que este path es correcto
 
 const Home = () => {
-  const allProducts = data.categorias.flatMap(cat =>
-    cat.productos || cat.subcategorias?.flatMap(sub => sub.productos) || []
-  );
+  const [allProducts, setAllProducts] = useState([]);
+
+  useEffect(() => {
+    const cargarProductos = async () => {
+      try {
+        const { categorias } = await obtenerProducts(); 
+        console.log('Categorías obtenidas:', categorias);
+        const productos = categorias.flatMap(cat => {
+          const productosCategoria = cat.productos || [];
+          const productosSubcategorias = cat.subcategorias?.flatMap(sub => sub.productos) || [];
+          return [...productosCategoria, ...productosSubcategorias];
+        });
+        setAllProducts(productos);
+      } catch (error) {
+        console.error('Error al cargar productos:', error);
+      }
+    };
+
+    cargarProductos();
+  }, []);
 
   return (
     <>
@@ -31,7 +48,9 @@ const Home = () => {
             className="mas-vendidos-carousel section"
           />
         </motion.div>
+
         <PromoStrip />
+
         <motion.div
           className='section-destacados'
           initial={{ opacity: 0, y: 50 }}
@@ -45,6 +64,7 @@ const Home = () => {
             className="mas-vendidos-carousel section"
           />
         </motion.div>
+
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

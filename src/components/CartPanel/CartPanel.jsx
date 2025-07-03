@@ -13,7 +13,8 @@ const CartPanel = ({ visible, onClose }) => {
     ).join('\n');
 
     const totalTexto = `\n💰 Total: $${total.toFixed(2)}`;
-    const textoFinal = `Hola, quiero realizar esta orden:\n\n${mensaje}${totalTexto}`;
+    const textoFinal = `Hola, quiero realizar esta orden:\n\n${mensaje}${totalTexto}\n\n📲 Métodos de pago:\n- Nequi: 3121234567\n- Daviplata: 3131234567\nEnvía el comprobante después del pago.`;
+
 
     const numero = '34611273164'; // sin "+" ni espacios
     const url = `https://wa.me/${numero}?text=${encodeURIComponent(textoFinal)}`;

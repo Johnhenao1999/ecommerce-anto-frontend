@@ -1,13 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './header.css';
 import logo from '../../assets/logo-anto-store.jpeg';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import CartPanel from '../CartPanel/CartPanel'; // Asegurate de que este archivo exista
+import { obtenerCategorias } from '../../services/categoriasService'; // Asegurate de que este archivo exista
 
 const Header = () => {
   const { cantidadTotal, setMostrarCarrito } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [categorias, setCategorias] = useState([]);
+
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        const data = await obtenerCategorias();
+        setCategorias(data);
+      } catch (err) {
+        console.error('No se pudieron cargar las categorías');
+      }
+    };
+
+    fetchCategorias();
+  }, []);
 
   return (
     <>
@@ -118,10 +132,11 @@ const Header = () => {
 
         <div className='header-container-category' style={{ width: '100%' }}>
           <div className='header-category section'>
-            <Link to="/categoria/maquillaje">Maquillaje</Link>
-            <Link to="/categoria/capilar">Capilar</Link>
-            <Link to="/categoria/accesorios">Facil y Corporal</Link>
-            <Link to="/categoria/accesorios">Variedades</Link>
+            {categorias.map((cat) => (
+              <Link key={cat._id} to={`/categoria/${cat.slug}`}>
+                {cat.nombre}
+              </Link>
+            ))}
           </div>
         </div>
         {isMenuOpen && (
@@ -134,10 +149,9 @@ const Header = () => {
               <button className="close-menu" onClick={() => setIsMenuOpen(false)}>✕</button>
 
               <div className="mobile-categories">
-                <Link to="/categoria/maquillaje" onClick={() => setIsMenuOpen(false)}>Maquillaje</Link>
-                <Link to="/categoria/capilar" onClick={() => setIsMenuOpen(false)}>Capilar</Link>
-                <Link to="/categoria/accesorios" onClick={() => setIsMenuOpen(false)}>Facil y Corporal</Link>
-                <Link to="/categoria/accesorios" onClick={() => setIsMenuOpen(false)}>Variedades</Link>
+              <Link onClick={() => setIsMenuOpen(false)} key={cat._id} to={`/categoria/${cat.slug}`}>
+                {cat.nombre}
+              </Link>
               </div>
 
               <div className="mobile-socials">

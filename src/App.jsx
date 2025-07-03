@@ -5,6 +5,9 @@ import ProductoDetalle from './pages/ProductDetail';
 import { useCart } from './context/CartContext';
 import CartPanel from './components/CartPanel/CartPanel';
 import WhatsAppButton from './components/WhatsAppButton/WhatsAppButton';
+import AddProducts from './pages/admin/AddProducts';
+import ProductList from './pages/admin/ProductList';
+import CrearCategoria from './pages/admin/AddCategory';
 import './App.css';
 
 function AppContent() {
@@ -17,6 +20,10 @@ function AppContent() {
         <Route path="/categoria/:categoriaSlug" element={<Categoria />} />
         <Route path="/categoria/:categoriaSlug/:subcategoriaSlug" element={<Categoria />} />
         <Route path="/producto/:productoId" element={<ProductoDetalle />} />
+        <Route path="/agregar-productos" element={<AddProducts />} />
+        <Route path="/admin/list-products" element={<ProductList />} />
+        <Route path="/admin/create-category" element={<CrearCategoria />} />
+        {/* Puedes agregar más rutas aquí según sea necesario */}
       </Routes>
 
       {/* 👇 Este va fuera de <Routes> */}

@@ -1,0 +1,32 @@
+.crear-categoria {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+  }
+  
+  .crear-categoria h2 {
+    margin-bottom: 15px;
+  }
+  
+  .crear-categoria input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .crear-categoria button {
+    padding: 6px 12px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    background: #e11d48;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .crear-categoria button:hover {
+    background: #be123c;
+  }
+  
