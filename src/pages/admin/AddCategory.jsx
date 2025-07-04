@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import '../../styles/AddCategory.css'; // Asegúrate de tener un archivo CSS para estilos
+import '../../styles/AddCategory.css';
+import Navbar from '../../components/Admin/Navbar/Navbar';
 
 const CrearCategoria = () => {
   const [nombreCategoria, setNombreCategoria] = useState('');
@@ -25,7 +26,7 @@ const CrearCategoria = () => {
     e.preventDefault();
     if (!nombreCategoria || subcategorias.some(sub => sub.trim() === '')) {
       setMensaje('⚠️ Todos los campos son obligatorios.');
-      return; 
+      return;
     }
 
     try {
@@ -51,39 +52,42 @@ const CrearCategoria = () => {
   };
 
   return (
-    <div className="crear-categoria">
-      <h2>Crear Nueva Categoría</h2>
-      {mensaje && <p>{mensaje}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Nombre de la categoría"
-          value={nombreCategoria}
-          onChange={(e) => setNombreCategoria(e.target.value)}
-          required
-        />
+    <>
+      <Navbar />
+      <div className="crear-categoria section-admin">
+        <h2>Crear Nueva Categoría</h2>
+        {mensaje && <p>{mensaje}</p>}
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Nombre de la categoría"
+            value={nombreCategoria}
+            onChange={(e) => setNombreCategoria(e.target.value)}
+            required
+          />
 
-        <h4>Subcategorías</h4>
-        {subcategorias.map((sub, i) => (
-          <div key={i} style={{ display: 'flex', gap: '10px', marginBottom: '5px' }}>
-            <input
-              type="text"
-              placeholder={`Subcategoría ${i + 1}`}
-              value={sub}
-              onChange={(e) => actualizarSubcategoria(i, e.target.value)}
-              required
-            />
-            {subcategorias.length > 1 && (
-              <button type="button" onClick={() => eliminarSubcategoria(i)}>🗑️</button>
-            )}
-          </div>
-        ))}
+          <h4>Subcategorías</h4>
+          {subcategorias.map((sub, i) => (
+            <div key={i} style={{ display: 'flex', gap: '10px', marginBottom: '5px' }}>
+              <input
+                type="text"
+                placeholder={`Subcategoría ${i + 1}`}
+                value={sub}
+                onChange={(e) => actualizarSubcategoria(i, e.target.value)}
+                required
+              />
+              {subcategorias.length > 1 && (
+                <button type="button" onClick={() => eliminarSubcategoria(i)}>🗑️</button>
+              )}
+            </div>
+          ))}
 
-        <button type="button" onClick={agregarSubcategoria}>+ Agregar Subcategoría</button>
-        <br /><br />
-        <button type="submit">Guardar Categoría</button>
-      </form>
-    </div>
+          <button type="button" onClick={agregarSubcategoria}>+ Agregar Subcategoría</button>
+          <br /><br />
+          <button type="submit">Guardar Categoría</button>
+        </form>
+      </div>
+    </>
   );
 };
 

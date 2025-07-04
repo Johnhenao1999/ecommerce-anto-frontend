@@ -1,3 +1,4 @@
+// src/context/CartContext.jsx
 import React, { createContext, useContext, useState } from 'react';
 
 const CartContext = createContext();
@@ -9,38 +10,52 @@ export const CartProvider = ({ children }) => {
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
 
   const agregarAlCarrito = (producto, cantidad) => {
-    const existente = cartItems.find(item => item.id === producto.id);
+    const precioFinal = producto.tieneDescuento
+      ? producto.precioDescuento
+      : producto.precio;
+
+    const productoConPrecio = {
+      ...producto,
+      precioOriginal: producto.precio,     // útil para mostrar el precio tachado si hay descuento
+      precio: precioFinal,                 // el precio final que se usará en el carrito
+      cantidad,
+    };
+
+    const existente = cartItems.find(item => item._id === producto._id);
 
     if (existente) {
       setCartItems(cartItems.map(item =>
-        item.id === producto.id ? { ...item, cantidad: item.cantidad + cantidad } : item
+        (item.id === producto.id || item._id === producto._id)
+          ? { ...item, cantidad: item.cantidad + cantidad }
+          : item
       ));
     } else {
-      setCartItems([...cartItems, { ...producto, cantidad }]);
+      setCartItems([...cartItems, productoConPrecio]);
     }
-    setMostrarCarrito(true); // 👈 Mostrar el panel al agregar
+
+    setMostrarCarrito(true);
   };
 
   const incrementarCantidad = (productoId) => {
     setCartItems(cartItems.map(item =>
-      item.id === productoId ? { ...item, cantidad: item.cantidad + 1 } : item
+      item._id === productoId ? { ...item, cantidad: item.cantidad + 1 } : item
     ));
   };
 
   const disminuirCantidad = (productoId) => {
     setCartItems(cartItems
       .map(item =>
-        item.id === productoId ? { ...item, cantidad: item.cantidad - 1 } : item
+        item._id === productoId ? { ...item, cantidad: item.cantidad - 1 } : item
       )
-      .filter(item => item.cantidad > 0) // elimina si llega a 0
+      .filter(item => item.cantidad > 0)
     );
   };
 
   const eliminarDelCarrito = (productoId) => {
-    setCartItems(cartItems.filter(item => item.id !== productoId));
+    setCartItems(cartItems.filter(item => item._id !== productoId));
   };
 
-  const cantidadTotal = cartItems.length;
+  const cantidadTotal = cartItems.reduce((acc, item) => acc + item.cantidad, 0);
 
   return (
     <CartContext.Provider value={{

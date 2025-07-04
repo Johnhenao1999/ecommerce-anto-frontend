@@ -1,15 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/AdminPanel.css';
-
-const categoriasData = {
-  Maquillaje: ['Cejas', 'Labios', 'Shampoo'],
-  Varios: ['Balones', 'Ropa', 'Otros'],
-  Capilar: ['Shampoo', 'Acondicionador', 'Tratamientos'],
-};
+import Navbar from '../../components/Admin/Navbar/Navbar';
+import { obtenerCategorias } from '../../services/categoriasService';
 
 const AdminPanel = () => {
   const preset_name = 'anto_store';
   const cloud_name = 'djzdunsof';
+
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
@@ -18,16 +15,48 @@ const AdminPanel = () => {
     imagen: '',
     stock: '',
     categoria: '',
-    subcategoria: ''
+    subcategoria: '',
+    tieneDescuento: false,
+    porcentajeDescuento: ''
   });
 
+  const [categoriasData, setCategoriasData] = useState({});
   const [subcategorias, setSubcategorias] = useState([]);
   const [mensaje, setMensaje] = useState('');
   const [subiendo, setSubiendo] = useState(false);
 
+  useEffect(() => {
+    const cargarCategorias = async () => {
+      try {
+        const data = await obtenerCategorias();
+        const formato = {};
+        data.forEach(cat => {
+          formato[cat.nombre] = cat.subcategorias.map(sub => sub.nombre);
+        });
+        setCategoriasData(formato);
+      } catch (error) {
+        console.error('Error al cargar categorías:', error);
+      }
+    };
+
+    cargarCategorias();
+  }, []);
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+
+    if (type === 'checkbox') {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: checked,
+        ...(name === 'tieneDescuento' && !checked ? { porcentajeDescuento: '' } : {})
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value
+      }));
+    }
 
     if (name === 'categoria') {
       setSubcategorias(categoriasData[value] || []);
@@ -40,11 +69,10 @@ const AdminPanel = () => {
     if (!file) return;
 
     setSubiendo(true);
-
     const form = new FormData();
     form.append('file', file);
-    form.append('upload_preset', preset_name); // Tu preset en Cloudinary
-    form.append('cloud_name', cloud_name); // Tu Cloudinary cloud name
+    form.append('upload_preset', preset_name);
+    form.append('cloud_name', cloud_name);
 
     try {
       const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
@@ -66,14 +94,14 @@ const AdminPanel = () => {
     const payload = {
       categoriaNombre: formData.categoria,
       subcategoriaNombre: formData.subcategoria,
-      producto: {
-        nombre: formData.nombre,
-        descripcion: formData.descripcion,
-        precio: parseFloat(formData.precio),
-        marca: formData.marca,
-        imagen: formData.imagen,
-        stock: parseInt(formData.stock)
-      }
+      nombre: formData.nombre,
+      descripcion: formData.descripcion,
+      precio: parseFloat(formData.precio),
+      marca: formData.marca,
+      imagen: formData.imagen,
+      stock: formData.stock ? parseInt(formData.stock) : null,
+      tieneDescuento: formData.tieneDescuento,
+      porcentajeDescuento: formData.tieneDescuento ? parseFloat(formData.porcentajeDescuento) : 0
     };
 
     try {
@@ -93,7 +121,7 @@ const AdminPanel = () => {
         return;
       }
 
-      console.log('✅ Producto agregado desde el backend:', data);
+      console.log('✅ Producto agregado:', data);
       setMensaje('✅ Producto agregado correctamente');
 
       setFormData({
@@ -104,7 +132,9 @@ const AdminPanel = () => {
         imagen: '',
         stock: '',
         categoria: '',
-        subcategoria: ''
+        subcategoria: '',
+        tieneDescuento: false,
+        porcentajeDescuento: ''
       });
     } catch (err) {
       console.error('❌ Error al enviar al backend:', err);
@@ -113,62 +143,94 @@ const AdminPanel = () => {
   };
 
   return (
-    <div className="admin-panel">
-      <h2>Agregar producto</h2>
-      <form onSubmit={handleSubmit} className="product-form">
-
-        <div className="row">
-          <div className="form-group">
-            <label>Categoría</label>
-            <select name="categoria" value={formData.categoria} onChange={handleChange} required>
-              <option value="">Selecciona categoría</option>
-              {Object.keys(categoriasData).map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
-
-          {subcategorias.length > 0 && (
+    <>
+      <Navbar />
+      <div className="admin-panel">
+        <h2>Agregar producto</h2>
+        <form onSubmit={handleSubmit} className="product-form">
+          <div className="row">
             <div className="form-group">
-              <label>Subcategoría</label>
-              <select name="subcategoria" value={formData.subcategoria} onChange={handleChange} required>
-                <option value="">Selecciona subcategoría</option>
-                {subcategorias.map((sub) => (
-                  <option key={sub} value={sub}>{sub}</option>
+              <label>Categoría</label>
+              <select name="categoria" value={formData.categoria} onChange={handleChange} required>
+                <option value="">Selecciona categoría</option>
+                {Object.keys(categoriasData).map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
                 ))}
               </select>
             </div>
-          )}
-        </div>
 
-        <div className="row">
-          <div className="form-group">
-            <label>Nombre</label>
-            <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} required />
+            {subcategorias.length > 0 && (
+              <div className="form-group">
+                <label>Subcategoría</label>
+                <select name="subcategoria" value={formData.subcategoria} onChange={handleChange} required>
+                  <option value="">Selecciona subcategoría</option>
+                  {subcategorias.map((sub) => (
+                    <option key={sub} value={sub}>{sub}</option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
-          <div className="form-group">
-            <label>Marca</label>
-            <input type="text" name="marca" value={formData.marca} onChange={handleChange} required />
-          </div>
-        </div>
 
-        <div className="form-group">
-          <label>Descripción</label>
-          <textarea name="descripcion" value={formData.descripcion} onChange={handleChange} required />
-        </div>
-
-        <div className="row">
-          <div className="form-group">
-            <label>Precio</label>
-            <input type="number" step="0.01" name="precio" value={formData.precio} onChange={handleChange} required />
+          <div className="row">
+            <div className="form-group">
+              <label>Nombre</label>
+              <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} required />
+            </div>
+            <div className="form-group">
+              <label>Marca</label>
+              <input type="text" name="marca" value={formData.marca} onChange={handleChange} required />
+            </div>
           </div>
-          <div className="form-group">
-            <label>Stock</label>
-            <input type="number" name="stock" value={formData.stock} onChange={handleChange} required />
-          </div>
-        </div>
 
-        <div className="row">
+          <div className="form-group">
+            <label>Descripción</label>
+            <textarea name="descripcion" value={formData.descripcion} onChange={handleChange} required />
+          </div>
+
+          <div className="row">
+            <div className="form-group">
+              <label>Precio</label>
+              <input type="number" step="0.01" name="precio" value={formData.precio} onChange={handleChange} required />
+            </div>
+          </div>
+
+          <div className='row'>
+            <div className="form-group">
+              <label className='label-sale'>
+                <input
+                  type="checkbox"
+                  name="tieneDescuento"
+                  checked={formData.tieneDescuento}
+                  onChange={handleChange}
+                />
+                ¿Tiene descuento?
+              </label>
+            </div>
+            {formData.tieneDescuento && (
+              <div className="form-group">
+                <label>Porcentaje de descuento (%)</label>
+                <input
+                  type="number"
+                  name="porcentajeDescuento"
+                  value={formData.porcentajeDescuento}
+                  min="1"
+                  max="100"
+                  onChange={handleChange}
+                  required
+                />
+                {formData.precio && (
+                  <small>
+                    Precio final: ${(
+                      formData.precio -
+                      (formData.precio * formData.porcentajeDescuento) / 100
+                    ).toFixed(2)}
+                  </small>
+                )}
+              </div>
+            )}
+          </div>
+
           <div className="form-group">
             <label>Imagen</label>
             <input type="file" accept="image/*" onChange={handleImageUpload} />
@@ -183,12 +245,11 @@ const AdminPanel = () => {
             )}
           </div>
 
-        </div>
-
-        <button type="submit">Agregar producto</button>
-        {mensaje && <div className="success-message">{mensaje}</div>}
-      </form>
-    </div>
+          <button type="submit">Agregar producto</button>
+          {mensaje && <div className="success-message">{mensaje}</div>}
+        </form>
+      </div>
+    </>
   );
 };
 

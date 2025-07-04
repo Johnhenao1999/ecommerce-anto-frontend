@@ -53,7 +53,7 @@ const CartPanel = ({ visible, onClose }) => {
                       <div className="item-header">
                         <img src={item.imagen} width={100} alt={item.nombre} />
                         <strong>{item.nombre}</strong>
-                        <button className="delete-btn" onClick={() => eliminarDelCarrito(item.id)} title="Eliminar">
+                        <button className="delete-btn" onClick={() => eliminarDelCarrito(item._id)} title="Eliminar">
                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                             viewBox="0 0 16 16">
                             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Zm2.5-.5a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Z" />
@@ -64,9 +64,9 @@ const CartPanel = ({ visible, onClose }) => {
                       </div>
 
                       <div className="item-controls">
-                        <button onClick={() => disminuirCantidad(item.id)} className="qty-btn">−</button>
+                        <button onClick={() => disminuirCantidad(item._id)} className="qty-btn">−</button>
                         <input type="number" min="1" value={item.cantidad} readOnly />
-                        <button onClick={() => incrementarCantidad(item.id)} className="qty-btn">+</button>
+                        <button onClick={() => incrementarCantidad(item._id)} className="qty-btn">+</button>
                       </div>
 
                       <div className="item-pricing">

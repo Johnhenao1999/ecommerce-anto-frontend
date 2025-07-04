@@ -41,6 +41,8 @@
     margin: 8px 0;
     font-weight: 500;
     color: #091e42;
+    text-align: left;
+    font-size: 0.9rem;
   }
 
   .producto-card span{
@@ -57,9 +59,9 @@
   }
 
   .price-card{
-    color: #000000;
+    color: #cc0058;
     font-weight: 700;
-    font-size: 1.25rem;
+    font-size: 0.9rem;
     opacity: 0.75;
   }
   
@@ -83,3 +85,17 @@
   .btn-carrito:hover {
     background-color: #b42c6e;
   }
+
+  .precio-original {
+    text-decoration: line-through;
+    color: #888;
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .precios {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
