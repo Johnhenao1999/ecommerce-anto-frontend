@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../../styles/AdminPanel.css';
-import Navbar from '../../components/Admin/Navbar/Navbar';
+import Navbar from '../../components/Navbar/Navbar';
 import { obtenerCategorias } from '../../services/categoriasService';
 
 const AdminPanel = () => {
@@ -145,7 +145,7 @@ const AdminPanel = () => {
   return (
     <>
       <Navbar />
-      <div className="admin-panel">
+      <div className="admin-panel section-admin">
         <h2>Agregar producto</h2>
         <form onSubmit={handleSubmit} className="product-form">
           <div className="row">

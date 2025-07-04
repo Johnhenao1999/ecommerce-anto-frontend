@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import '../../styles/ProductList.css';
-import Navbar from '../../components/Admin/Navbar/Navbar';
+import Navbar from '../../components/Navbar/Navbar';
+import { obtenerCategorias } from '../../services/categoriasService';
+import { formatearCOP } from '../../utils/format';
+
 
 const ProductList = () => {
   const [productos, setProductos] = useState([]);
@@ -8,14 +11,26 @@ const ProductList = () => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [productosPorPagina] = useState(8);
   const [productoEditando, setProductoEditando] = useState(null);
+  const [categoriasData, setCategoriasData] = useState({});
   const preset_name = 'anto_store';
   const cloud_name = 'djzdunsof';
 
-  const categoriasData = {
-    maquillaje: ['Cejas', 'Labios', 'Shampoo'],
-    Varios: ['Balones', 'Ropa', 'Otros'],
-    Capilar: ['Shampoo', 'Acondicionador', 'Tratamientos'],
-  };
+  useEffect(() => {
+    const cargarCategorias = async () => {
+      try {
+        const data = await obtenerCategorias();
+        const formato = {};
+        data.forEach(cat => {
+          formato[cat.nombre] = cat.subcategorias.map(sub => sub.nombre);
+        });
+        setCategoriasData(formato);
+      } catch (error) {
+        console.error('Error al cargar categorías:', error);
+      }
+    };
+
+    cargarCategorias();
+  }, []);
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -23,15 +38,23 @@ const ProductList = () => {
         const res = await fetch('http://localhost:3000/api/products');
         const data = await res.json();
 
-        const productosAplanados = data.categorias.flatMap(categoria =>
-          categoria.subcategorias.flatMap(subcategoria =>
-            subcategoria.productos.map(producto => ({
+        const productosAplanados = data.categorias.flatMap(categoria => {
+          const productosSinSubcategoria = (categoria.productos || []).map(producto => ({
+            ...producto,
+            categoria: categoria.nombre,
+            subcategoria: null
+          }));
+
+          const productosConSubcategorias = (categoria.subcategorias || []).flatMap(subcategoria =>
+            (subcategoria.productos || []).map(producto => ({
               ...producto,
               categoria: categoria.nombre,
               subcategoria: subcategoria.nombre
             }))
-          )
-        );
+          );
+
+          return [...productosSinSubcategoria, ...productosConSubcategorias];
+        });
 
         setProductos(productosAplanados);
       } catch (err) {
@@ -145,7 +168,7 @@ const ProductList = () => {
   return (
     <>
       <Navbar />
-      <div className="product-list">
+      <div className="product-list section-admin">
         <h2>Listado de Productos</h2>
 
         <div className="filters">
@@ -194,11 +217,13 @@ const ProductList = () => {
                 <td><img src={p.imagen} alt={p.nombre} width="50" /></td>
                 <td>{p.nombre}</td>
                 <td>{p.marca}</td>
-                <td>${p.precio}</td>
+                <td>{formatearCOP(p.precio)}</td>
                 <td>{p.categoria}</td>
                 <td>{p.subcategoria}</td>
-                <td>{p.precioDescuento} - {p.porcentajeDescuento}% </td>
-                <td>
+                <td style={{ textWrap: "nowrap" }}>
+                  {p.precioDescuento != null ? formatearCOP(p.precioDescuento) : '-'} / {p.porcentajeDescuento || 0}%
+                </td>
+                <td style={{ display: "flex" }}>
                   <button className="edit-btn" onClick={() => seleccionarProducto(p)}>✏️</button>
                   <button className="delete-btn" onClick={() => handleEliminar(p._id)}>🗑️</button>
                 </td>
@@ -281,12 +306,10 @@ const ProductList = () => {
                     />
                     {productoEditando.precio && (
                       <small>
-                        Precio final: $
-                        {(
+                        Precio final: {formatearCOP(
                           productoEditando.precio -
-                          (productoEditando.precio * productoEditando.porcentajeDescuento) /
-                          100
-                        ).toFixed(2)}
+                          (productoEditando.precio * productoEditando.porcentajeDescuento) / 100
+                        )}
                       </small>
                     )}
                   </div>

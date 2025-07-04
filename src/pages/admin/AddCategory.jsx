@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../../styles/AddCategory.css';
-import Navbar from '../../components/Admin/Navbar/Navbar';
+import Navbar from '../../components/Navbar/Navbar';
 
 const CrearCategoria = () => {
   const [nombreCategoria, setNombreCategoria] = useState('');
@@ -24,7 +24,7 @@ const CrearCategoria = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!nombreCategoria || subcategorias.some(sub => sub.trim() === '')) {
+    if (!nombreCategoria) {
       setMensaje('⚠️ Todos los campos son obligatorios.');
       return;
     }
@@ -35,14 +35,16 @@ const CrearCategoria = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre: nombreCategoria,
-          subcategorias: subcategorias.map(sub => sub.trim())
+          subcategorias: subcategorias
+            .map(sub => sub.trim())
+            .filter(sub => sub !== '') // eliminar vacías
         })
       });
 
       if (!res.ok) throw new Error('Error en la creación');
 
       const data = await res.json();
-      setMensaje(`✅ Categoría "${data.nombre}" creada con éxito.`);
+      setMensaje(`✅ Categoría "${data.categoria.nombre}" creada con éxito.`);
       setNombreCategoria('');
       setSubcategorias(['']);
     } catch (err) {
@@ -74,7 +76,6 @@ const CrearCategoria = () => {
                 placeholder={`Subcategoría ${i + 1}`}
                 value={sub}
                 onChange={(e) => actualizarSubcategoria(i, e.target.value)}
-                required
               />
               {subcategorias.length > 1 && (
                 <button type="button" onClick={() => eliminarSubcategoria(i)}>🗑️</button>

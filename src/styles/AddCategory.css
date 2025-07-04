@@ -1,9 +1,11 @@
 .crear-categoria {
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-    border: 2px solid #ccc;
-    border-radius: 10px;
+    max-width: 960px;
+    margin: 40px auto;
+    padding: 32px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    font-family: 'Figtree', sans-serif;
   }
   
   .crear-categoria h2 {
