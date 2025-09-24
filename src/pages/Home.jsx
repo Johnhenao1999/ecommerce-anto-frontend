@@ -71,7 +71,7 @@ const Home = () => {
           transition={{ duration: 1, delay: 0.3 }}
           viewport={{ once: true }}
         >
-          <Newsletter />
+         {/*} <Newsletter /> */}
         </motion.div>
 
         <Footer />

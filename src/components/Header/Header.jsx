@@ -27,7 +27,7 @@ const Header = () => {
     <>
       <header className="app-header">
         <div className="pre-header">
-          Realiza tus compras por medio del sitio web y obtendrás beneficios.
+          Realiza tu pedido por medio del sitio web y obtendrás beneficios.
         </div>
 
         <div className='app-header-container section'>
@@ -92,16 +92,20 @@ const Header = () => {
           <div className="user-menu">
             <div className='hidden-mobile-redes'>
               {/* Instagram */}
-              <svg xmlns="http://www.w3.org/2000/svg" className="icon-instagram" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
-              </svg>
+              <a href="https://www.instagram.com/anto_store29">
+                <svg xmlns="http://www.w3.org/2000/svg" className="icon-instagram" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                  <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
+                </svg>
+              </a>
 
               {/* TikTok */}
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="30" height="30" className="icon-tiktok">
-                <path fill="currentColor" d="M208 84.5a60.6 60.6 0 0 1-38.2-13.5V144a64 64 0 1 1-64-64 62.4 62.4 0 0 1 8 .5v40.7a24 24 0 1 0 16 22.8V16h40.2a60.2 60.2 0 0 0 41.8 59Z" />
-              </svg>
+              <a href="">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="30" height="30" className="icon-tiktok">
+                  <path fill="currentColor" d="M208 84.5a60.6 60.6 0 0 1-38.2-13.5V144a64 64 0 1 1-64-64 62.4 62.4 0 0 1 8 .5v40.7a24 24 0 1 0 16 22.8V16h40.2a60.2 60.2 0 0 0 41.8 59Z" />
+                </svg>
+              </a>
 
             </div>
             {/* Carrito */}
@@ -149,18 +153,20 @@ const Header = () => {
               <button className="close-menu" onClick={() => setIsMenuOpen(false)}>✕</button>
 
               <div className="mobile-categories">
-              <Link onClick={() => setIsMenuOpen(false)} key={cat._id} to={`/categoria/${cat.slug}`}>
-                {cat.nombre}
-              </Link>
+                <Link onClick={() => setIsMenuOpen(false)} key={cat._id} to={`/categoria/${cat.slug}`}>
+                  {cat.nombre}
+                </Link>
               </div>
 
               <div className="mobile-socials">
                 {/* Instagram */}
-                <svg xmlns="http://www.w3.org/2000/svg" className="icon-instagram" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                  <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
-                </svg>
+                <a href="https://www.instagram.com/anto_store29">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="icon-instagram" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                    <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
+                  </svg>
+                </a>
 
                 {/* TikTok */}
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="30" height="30" className="icon-tiktok">

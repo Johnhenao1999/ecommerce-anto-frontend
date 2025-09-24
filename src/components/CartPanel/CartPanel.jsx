@@ -42,7 +42,7 @@ const CartPanel = ({ visible, onClose }) => {
         </div>
 
         {cartItems.length === 0 ? (
-          <p>No hay productos.</p>
+          <p style={{ padding: "16px" }}>No hay productos en el carrito.</p>
         ) : (
           <>
             <div className='cart-panel-content'>

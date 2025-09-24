@@ -1,0 +1,62 @@
+  
+  /* Contenedor del formulario */
+
+  .container-login{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #e11d4829;;
+  }
+
+  .login-container {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  /* Título */
+  .login-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* Inputs */
+  .login-container input {
+    width: 100%;
+    padding: 12px 10px;
+    margin: 10px 0 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  
+  /* Botón */
+  .login-container button {
+    background-color: #4b6cb7;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .login-container button:hover {
+    background-color: #3d5a99;
+  }
+  
+  /* Mensaje */
+  .login-container p {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #2e7d32;
+  }
+  

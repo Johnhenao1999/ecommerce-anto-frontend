@@ -99,7 +99,6 @@ const AdminPanel = () => {
       precio: parseFloat(formData.precio),
       marca: formData.marca,
       imagen: formData.imagen,
-      stock: formData.stock ? parseInt(formData.stock) : null,
       tieneDescuento: formData.tieneDescuento,
       porcentajeDescuento: formData.tieneDescuento ? parseFloat(formData.porcentajeDescuento) : 0
     };
@@ -130,7 +129,6 @@ const AdminPanel = () => {
         precio: '',
         marca: '',
         imagen: '',
-        stock: '',
         categoria: '',
         subcategoria: '',
         tieneDescuento: false,
