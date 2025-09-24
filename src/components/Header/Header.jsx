@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './header.css';  
+import './Header.css';  
 import logo from '../../assets/logo-anto-store.jpeg';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
