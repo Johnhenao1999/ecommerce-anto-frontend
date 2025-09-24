@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../../styles/AddCategory.css';
 import Navbar from '../../components/Navbar/Navbar';
+import { API_BASE } from '../../utils/api';
 
 const CrearCategoria = () => {
   const [nombreCategoria, setNombreCategoria] = useState('');
@@ -30,7 +31,7 @@ const CrearCategoria = () => {
     }
 
     try {
-      const res = await fetch('http://localhost:3000/api/categories', {
+      const res = await fetch(`${API_BASE}/categories`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

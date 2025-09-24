@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../../styles/AdminPanel.css';
 import Navbar from '../../components/Navbar/Navbar';
 import { obtenerCategorias } from '../../services/categoriasService';
+import { API_BASE } from '../../utils/api';
 
 const AdminPanel = () => {
   const preset_name = 'anto_store';
@@ -104,7 +105,7 @@ const AdminPanel = () => {
     };
 
     try {
-      const res = await fetch('http://localhost:3000/api/products', {
+      const res = await fetch(`${API_BASE}/products`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

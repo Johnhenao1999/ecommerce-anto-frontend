@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/login.css'; // Asegúrate de tener este archivo CSS
 import { div } from 'framer-motion/client';
+import { API_BASE } from '../utils/api';
 
 const Login = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
@@ -15,7 +16,7 @@ const Login = ({ onLoginSuccess }) => {
     setMensaje('');
 
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/login', {
+      const res = await axios.post(`${API_BASE}/auth/login`, {
         email,
         password,
       });

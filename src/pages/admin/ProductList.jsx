@@ -3,6 +3,7 @@ import '../../styles/ProductList.css';
 import Navbar from '../../components/Navbar/Navbar';
 import { obtenerCategorias } from '../../services/categoriasService';
 import { formatearCOP } from '../../utils/format';
+import { API_BASE } from '../../utils/api';
 
 
 const ProductList = () => {
@@ -35,7 +36,7 @@ const ProductList = () => {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/products');
+        const res = await fetch(`${API_BASE}/products`);
         const data = await res.json();
 
         const productosAplanados = data.categorias.flatMap(categoria => {
@@ -90,7 +91,7 @@ const ProductList = () => {
     if (!confirmar) return;
 
     try {
-      const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+      const res = await fetch(`${API_BASE}/products/${id}`, {
         method: 'DELETE'
       });
       if (!res.ok) throw new Error('Error al eliminar');
@@ -109,7 +110,7 @@ const ProductList = () => {
   const handleEditar = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:3000/api/products/${productoEditando._id}`, {
+      const res = await fetch(`${API_BASE}/products/${productoEditando._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

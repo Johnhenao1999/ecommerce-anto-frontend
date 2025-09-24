@@ -1,7 +1,5 @@
-// src/services/categoriasService.js
 import axios from 'axios';
-
-const API_BASE = 'http://localhost:3000/api'; // cambia si tu backend está en producción
+import { API_BASE } from '../utils/api';
 
 export const obtenerCategorias = async () => {
   try {
