@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Header.css';  
+import './Header.css';
 import logo from '../../assets/logo-anto-store.jpeg';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
@@ -15,6 +15,7 @@ const Header = () => {
       try {
         const data = await obtenerCategorias();
         setCategorias(data);
+        console.log(data);
       } catch (err) {
         console.error('No se pudieron cargar las categorías');
       }
@@ -153,9 +154,15 @@ const Header = () => {
               <button className="close-menu" onClick={() => setIsMenuOpen(false)}>✕</button>
 
               <div className="mobile-categories">
-                <Link onClick={() => setIsMenuOpen(false)} key={cat._id} to={`/categoria/${cat.slug}`}>
-                  {cat.nombre}
-                </Link>
+                {categorias.map((cat) => (
+                  <Link
+                    key={cat._id}
+                    to={`/categoria/${cat.slug}`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {cat.nombre}
+                  </Link>
+                ))}
               </div>
 
               <div className="mobile-socials">
