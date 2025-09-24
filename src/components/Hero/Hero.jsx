@@ -1,5 +1,5 @@
 import React from 'react';
-import './hero.css';
+import './Hero.css';
 import bannerImg from '../../assets/banner-anto.png';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
