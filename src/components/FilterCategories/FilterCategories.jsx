@@ -3,7 +3,7 @@ import './FilterCategories.css';
 
 const FiltrosSubcategorias = ({ subcategorias, subcategoriaActiva, setSubcategoriaActiva }) => {
     if (!subcategorias || subcategorias.length === 0) {
-        return <p>No hay subcategorías</p>;
+        return <p></p>;
     }
 
     return (

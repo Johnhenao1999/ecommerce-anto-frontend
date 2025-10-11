@@ -1,101 +1,103 @@
 .productos-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 24px;
-  }
-  
-  .producto-card {
-    border: 1px solid #eee;
-    padding: 16px;
-    border-radius: 16px;
-    background-color: #fff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-    text-align: center;
-    transition: box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    justify-content: space-between;
-    box-sizing: border-box;
-  }
-  
-  .producto-card:hover {
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
-  }
-  
-  .producto-card img {
-    border-radius: 12px;
-    margin-bottom: 12px;
-    max-width: 100%;
-    margin: 0;
-  }
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+}
 
-  .producto-card a:first-child{
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  }
+.producto-card {
+  border: 1px solid #eee;
+  padding: 16px;
+  border-radius: 16px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: space-between;
+  box-sizing: border-box;
+  gap: 8px;
+}
 
-  
-  .producto-card a h3{
-    margin: 8px 0;
-    font-weight: 500;
-    color: #091e42;
-    text-align: left;
-    font-size: 0.9rem;
-  }
+.producto-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
+}
 
-  .producto-card span{
-    color: #7d7d7d;
-  }
-  
-  .container-button-price{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    flex-direction: column;
-    align-items: start;
-  }
+.producto-card img {
+  border-radius: 12px;
+  margin-bottom: 12px;
+  max-width: 100%;
+  max-height: 227px;
+  object-fit: cover;
+  margin: 0;
+}
 
-  .price-card{
-    color: #cc0058;
-    font-weight: 700;
-    font-size: 0.9rem;
-    opacity: 0.75;
-  }
-  
-  .btn-carrito {
-    background-color: #E92B63;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 12px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    text-decoration: none;
-    font-weight: 500;
-    opacity: 0.75;
-  }
-  
-  .btn-carrito:hover {
-    background-color: #b42c6e;
-  }
+.producto-card a:first-child {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
 
-  .precio-original {
-    text-decoration: line-through;
-    color: #888;
-    margin-right: 0.5rem;
-    font-size: 0.9rem;
-  }
-  
-  .precios {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
+
+.producto-card a h3 {
+  margin: 0;
+  font-weight: 500;
+  color: #091e42;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.producto-card span {
+  color: #7d7d7d;
+}
+
+.container-button-price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  flex-direction: column;
+  align-items: start;
+}
+
+.price-card {
+  color: #cc0058;
+  font-weight: 700;
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+.btn-carrito {
+  background-color: #E92B63;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-decoration: none;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+.btn-carrito:hover {
+  background-color: #b42c6e;
+}
+
+.precio-original {
+  text-decoration: line-through;
+  color: #888;
+  margin-right: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.precios {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
