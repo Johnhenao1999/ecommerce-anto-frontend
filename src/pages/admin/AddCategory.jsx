@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import '../../styles/AddCategory.css';
-import Navbar from '../../components/Navbar/Navbar';
-import { API_BASE } from '../../utils/api';
+import React, { useState } from "react";
+import "../../styles/AddCategory.css";
+import Navbar from "../../components/Navbar/Navbar";
+import { API_BASE } from "../../utils/api";
 
 const CrearCategoria = () => {
-  const [nombreCategoria, setNombreCategoria] = useState('');
-  const [subcategorias, setSubcategorias] = useState(['']);
-  const [mensaje, setMensaje] = useState('');
+  const [nombreCategoria, setNombreCategoria] = useState("");
+  const [subcategorias, setSubcategorias] = useState([""]);
+  const [mensaje, setMensaje] = useState("");
+  const [estado, setEstado] = useState(null); // "success" | "error" | null
 
   const agregarSubcategoria = () => {
-    setSubcategorias([...subcategorias, '']);
+    setSubcategorias([...subcategorias, ""]);
   };
 
   const actualizarSubcategoria = (index, value) => {
@@ -25,32 +26,35 @@ const CrearCategoria = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!nombreCategoria) {
-      setMensaje('⚠️ Todos los campos son obligatorios.');
+    if (!nombreCategoria.trim()) {
+      setMensaje("⚠️ El nombre de la categoría es obligatorio.");
+      setEstado("error");
       return;
     }
 
     try {
       const res = await fetch(`${API_BASE}/categories`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          nombre: nombreCategoria,
+          nombre: nombreCategoria.trim(),
           subcategorias: subcategorias
-            .map(sub => sub.trim())
-            .filter(sub => sub !== '') // eliminar vacías
-        })
+            .map((sub) => sub.trim())
+            .filter((sub) => sub !== ""),
+        }),
       });
 
-      if (!res.ok) throw new Error('Error en la creación');
+      if (!res.ok) throw new Error("Error en la creación");
 
       const data = await res.json();
       setMensaje(`✅ Categoría "${data.categoria.nombre}" creada con éxito.`);
-      setNombreCategoria('');
-      setSubcategorias(['']);
+      setEstado("success");
+      setNombreCategoria("");
+      setSubcategorias([""]);
     } catch (err) {
-      console.error('Error al crear categoría:', err);
-      setMensaje('❌ Error al crear la categoría.');
+      console.error("Error al crear categoría:", err);
+      setMensaje("❌ Error al crear la categoría.");
+      setEstado("error");
     }
   };
 
@@ -59,34 +63,114 @@ const CrearCategoria = () => {
       <Navbar />
       <div className="crear-categoria section-admin">
         <h2>Crear Nueva Categoría</h2>
-        {mensaje && <p>{mensaje}</p>}
-        <form onSubmit={handleSubmit}>
+
+        {mensaje && (
+          <div className={`mensaje ${estado}`}>
+            {mensaje}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="categoria-form">
+          {/* Campo principal */}
+          <label htmlFor="nombreCategoria">Nombre de la categoría</label>
           <input
+            id="nombreCategoria"
             type="text"
-            placeholder="Nombre de la categoría"
+            placeholder="Ej. Maquillaje, Cuidado facial..."
             value={nombreCategoria}
             onChange={(e) => setNombreCategoria(e.target.value)}
-            required
           />
 
+          {/* Subcategorías */}
           <h4>Subcategorías</h4>
-          {subcategorias.map((sub, i) => (
-            <div key={i} style={{ display: 'flex', gap: '10px', marginBottom: '5px' }}>
-              <input
-                type="text"
-                placeholder={`Subcategoría ${i + 1}`}
-                value={sub}
-                onChange={(e) => actualizarSubcategoria(i, e.target.value)}
-              />
-              {subcategorias.length > 1 && (
-                <button type="button" onClick={() => eliminarSubcategoria(i)}>🗑️</button>
-              )}
-            </div>
-          ))}
+          <div className="subcategorias-container">
+            {subcategorias.map((sub, i) => (
+              <div key={i} className="subcategoria-item">
+                <input
+                  type="text"
+                  placeholder={`Subcategoría ${i + 1}`}
+                  value={sub}
+                  onChange={(e) =>
+                    actualizarSubcategoria(i, e.target.value)
+                  }
+                />
+                {subcategorias.length > 1 && (
+                  <button
+                    type="button"
+                    className="delete-btn"
+                    onClick={() => eliminarSubcategoria(i)}
+                    title="Eliminar subcategoría"
+                  >
+                    {/* 🗑️ */}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      width="16"
+                      height="16"
+                    >
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                      <path d="M10 11v6" />
+                      <path d="M14 11v6" />
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
 
-          <button type="button" onClick={agregarSubcategoria}>+ Agregar Subcategoría</button>
-          <br /><br />
-          <button type="submit">Guardar Categoría</button>
+          {/* Botón para agregar subcategoría */}
+          <button
+            type="button"
+            className="add-sub-btn"
+            onClick={agregarSubcategoria}
+          >
+            {/* ➕ */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              width="16"
+              height="16"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            <span>Agregar Subcategoría</span>
+          </button>
+
+          <hr />
+
+          {/* Botón de guardar */}
+          <button type="submit" className="save-btn">
+            {/* 💾 */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              width="16"
+              height="16"
+            >
+              <path d="M20 21V8l-3-3H4a2 2 0 0 0-2 2v14h18z" />
+              <polyline points="16 3 16 8 8 8 8 3" />
+              <rect x="8" y="13" width="8" height="5" rx="1" />
+            </svg>
+            <span>Guardar Categoría</span>
+          </button>
         </form>
       </div>
     </>

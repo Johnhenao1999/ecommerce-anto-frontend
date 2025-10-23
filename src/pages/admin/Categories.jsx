@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/categoryAdminPanel.css";
 import Navbar from "../../components/Navbar/Navbar";
+import { Link } from "react-router-dom";
 import { API_BASE } from "../../utils/api";
 
 const Categories = () => {
@@ -131,6 +132,20 @@ const Categories = () => {
       <Navbar />
       <div className="categories section-admin">
         <h2>Categorías y Subcategorías</h2>
+
+        {/* 🔹 Crear nueva categoría */}
+        <div className="add-category">
+          <Link to="/admin/crear-categoria" className="add-category-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" strokeWidth="2"
+              strokeLinecap="round" strokeLinejoin="round"
+              width="16" height="16">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            <span>Agregar categoría</span>
+          </Link>
+        </div>
 
         {/* 🔹 Lista de categorías */}
         <div className="category-list">
@@ -292,9 +307,9 @@ const Categories = () => {
                 />
                 <button onClick={() => handleAgregarSub(cat._id)}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
                 </button>
               </div>
             </div>

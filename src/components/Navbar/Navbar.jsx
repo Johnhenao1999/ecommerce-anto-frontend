@@ -56,7 +56,6 @@ const Sidebar = () => {
           <li onClick={() => navigate('/admin/list-products')}>Productos</li>
           <li onClick={() => navigate('/admin/categorias')}>Categorías</li>
           <li onClick={() => navigate('/admin/agregar-productos')}>Agregar Productos</li>
-          <li onClick={() => navigate('/admin/create-category')}>Agregar Categorías</li>
           <li onClick={cerrarSesion}>Cerrar sesión</li>
         </ul>
       </aside>

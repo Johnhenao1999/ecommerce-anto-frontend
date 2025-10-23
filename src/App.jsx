@@ -30,7 +30,7 @@ function AppContent() {
         <Route path="/admin" element={<RutaProtegida><AdminHome /></RutaProtegida>} />
         <Route path="/admin/agregar-productos" element={<RutaProtegida><AddProducts /></RutaProtegida>} />
         <Route path="/admin/list-products" element={<RutaProtegida><ProductList /></RutaProtegida>} />
-        <Route path="/admin/create-category" element={<RutaProtegida><CrearCategoria /></RutaProtegida>} />
+        <Route path="/admin/crear-categoria" element={<RutaProtegida><CrearCategoria /></RutaProtegida>} />
         <Route path="/admin/categorias" element={<RutaProtegida><Categories /></RutaProtegida>} />
 
         {/* 🔓 Ruta pública */}
