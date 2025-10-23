@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://antostoremakeup.vercel.app/sitemap.xml
