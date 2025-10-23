@@ -10,7 +10,9 @@ import ProductList from './pages/admin/ProductList';
 import CrearCategoria from './pages/admin/AddCategory';
 import AdminHome from './pages/admin/AdminHome';
 import Login from './pages/Login';
-import RutaProtegida from './components/RutaProtegida'; // 👈 asegurarte de que esté en components
+import Categories from './pages/admin/Categories';
+import RutaProtegida from './components/RutaProtegida';
+import { Analytics } from '@vercel/analytics/react'; // ✅ corregido (quitado el “s” extra)
 import './App.css';
 
 function AppContent() {
@@ -23,20 +25,13 @@ function AppContent() {
         <Route path="/categoria/:categoriaSlug" element={<Categoria />} />
         <Route path="/categoria/:categoriaSlug/:subcategoriaSlug" element={<Categoria />} />
         <Route path="/producto/:productoId" element={<ProductoDetalle />} />
-        
+
         {/* 🛡️ Rutas protegidas */}
-        <Route path="/admin" element={
-          <RutaProtegida><AdminHome /></RutaProtegida>
-        } />
-        <Route path="/admin/agregar-productos" element={
-          <RutaProtegida><AddProducts /></RutaProtegida>
-        } />
-        <Route path="/admin/list-products" element={
-          <RutaProtegida><ProductList /></RutaProtegida>
-        } />
-        <Route path="/admin/create-category" element={
-          <RutaProtegida><CrearCategoria /></RutaProtegida>
-        } />
+        <Route path="/admin" element={<RutaProtegida><AdminHome /></RutaProtegida>} />
+        <Route path="/admin/agregar-productos" element={<RutaProtegida><AddProducts /></RutaProtegida>} />
+        <Route path="/admin/list-products" element={<RutaProtegida><ProductList /></RutaProtegida>} />
+        <Route path="/admin/create-category" element={<RutaProtegida><CrearCategoria /></RutaProtegida>} />
+        <Route path="/admin/categorias" element={<RutaProtegida><Categories /></RutaProtegida>} />
 
         {/* 🔓 Ruta pública */}
         <Route path="/login" element={<Login />} />
@@ -53,6 +48,8 @@ export default function App() {
   return (
     <Router>
       <AppContent />
+      {/* 🔍 Analytics debe ir aquí, para medir TODAS las rutas */}
+      <Analytics />
     </Router>
   );
 }
