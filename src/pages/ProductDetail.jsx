@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Header from '../components/Header/Header';
 import Footer from '../components/Footer/Footer';
 import { useCart } from '../context/CartContext';
+import { formatearCOP } from '../utils/format';
 import '../styles/productDetail.css';
 import { obtenerProducts } from '../services/categoriasService'; 
 
@@ -56,7 +57,7 @@ const ProductoDetalle = () => {
         <div className="producto-detalle-info">
           <h1>{producto.nombre} - {producto.marca}</h1>
           <p>{producto.descripcion}</p>
-          <strong>${producto.precio}</strong>
+          <strong>{formatearCOP(producto.precio)}</strong>
 
           <p className="disponibilidad">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#129e20" viewBox="0 0 24 24" style={{ marginRight: '6px', verticalAlign: 'middle' }}>

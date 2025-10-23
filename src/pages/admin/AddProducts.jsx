@@ -26,6 +26,17 @@ const AdminPanel = () => {
   const [mensaje, setMensaje] = useState('');
   const [subiendo, setSubiendo] = useState(false);
 
+  const formatCOP = (value) => {
+    if (!value) return "";
+    const number = parseFloat(value.replace(/\D/g, ""));
+    if (isNaN(number)) return "";
+    return number.toLocaleString("es-CO", {
+      style: "currency",
+      currency: "COP",
+      minimumFractionDigits: 0,
+    });
+  };
+
   useEffect(() => {
     const cargarCategorias = async () => {
       try {
@@ -46,22 +57,29 @@ const AdminPanel = () => {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
-    if (type === 'checkbox') {
+    if (type === "checkbox") {
       setFormData((prev) => ({
         ...prev,
         [name]: checked,
-        ...(name === 'tieneDescuento' && !checked ? { porcentajeDescuento: '' } : {})
+        ...(name === "tieneDescuento" && !checked ? { porcentajeDescuento: "" } : {})
+      }));
+    } else if (name === "precio") {
+      // elimina caracteres no numéricos antes de guardar
+      const numericValue = value.replace(/\D/g, "");
+      setFormData((prev) => ({
+        ...prev,
+        [name]: numericValue,
       }));
     } else {
       setFormData((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
 
-    if (name === 'categoria') {
+    if (name === "categoria") {
       setSubcategorias(categoriasData[value] || []);
-      setFormData((prev) => ({ ...prev, subcategoria: '' }));
+      setFormData((prev) => ({ ...prev, subcategoria: "" }));
     }
   };
 
@@ -190,7 +208,14 @@ const AdminPanel = () => {
           <div className="row">
             <div className="form-group">
               <label>Precio</label>
-              <input type="number" step="0.01" name="precio" value={formData.precio} onChange={handleChange} required />
+              <input
+                type="text"
+                name="precio"
+                value={formatCOP(formData.precio)}
+                onChange={handleChange}
+                placeholder="$ 0"
+                required
+              />
             </div>
           </div>
 
