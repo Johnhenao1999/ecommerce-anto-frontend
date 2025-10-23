@@ -9,13 +9,14 @@ const Header = () => {
   const { cantidadTotal, setMostrarCarrito } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [categorias, setCategorias] = useState([]);
+  const [categoriaActiva, setCategoriaActiva] = useState(null);
 
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
         const data = await obtenerCategorias();
         setCategorias(data);
-        console.log(data);
+        console.log("categorias", data);
       } catch (err) {
         console.error('No se pudieron cargar las categorías');
       }
@@ -155,13 +156,46 @@ const Header = () => {
 
               <div className="mobile-categories">
                 {categorias.map((cat) => (
-                  <Link
-                    key={cat._id}
-                    to={`/categoria/${cat.slug}`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {cat.nombre}
-                  </Link>
+                  <div key={cat._id} className="mobile-category-item">
+                    <button
+                      className="category-toggle"
+                      onClick={() =>
+                        setCategoriaActiva(categoriaActiva === cat._id ? null : cat._id)
+                      }
+                    >
+                      <span>{cat.nombre}</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={`arrow-icon ${categoriaActiva === cat._id ? "open" : ""
+                          }`}
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+
+                    {/* Subcategorías */}
+                    <div
+                      className={`subcategory-list ${categoriaActiva === cat._id ? "show" : ""
+                        }`}
+                    >
+                      {cat.subcategorias.map((sub) => (
+                        <Link
+                          key={sub._id}
+                          to={`/categoria/${cat.slug}/${sub.slug}`}
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {sub.nombre}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
 
