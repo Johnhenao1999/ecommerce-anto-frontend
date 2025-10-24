@@ -1,0 +1,163 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.order-modal {
+  background: #fff;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  padding: 24px;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #F6D2D1;
+  margin-bottom: 16px;
+}
+
+.modal-header h3 {
+  color: #E92B63;
+  font-size: 1.4rem;
+}
+
+.modal-content{
+    max-width: 100%;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #E92B63;
+  cursor: pointer;
+}
+
+.info-cliente {
+  background: #fef5f7;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.info-cliente h4 {
+  color: #E92B63;
+  margin-bottom: 10px;
+}
+
+.info-cliente p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+}
+
+.info-items h4 {
+  color: #E92B63;
+  margin-bottom: 10px;
+}
+
+.info-items table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.info-items th, .info-items td {
+  border-bottom: 1px solid #eee;
+  padding: 8px;
+  text-align: left;
+}
+
+.info-items th {
+  background: #FDE8EF;
+}
+
+.total {
+  text-align: right;
+  font-size: 1.1rem;
+  margin-top: 12px;
+  color: #E92B63;
+}
+
+/* 🟣 Mobile Drawer Experience */
+@media (max-width: 768px) {
+  .order-modal {
+    width: 100%;
+    height: 95vh;
+    max-width: none;
+    border-radius: 16px 16px 0 0;
+    padding: 20px 18px 28px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    background: #fff;
+    box-shadow: 0 -4px 18px rgba(0,0,0,0.25);
+    transform: translateY(0);
+    animation: slideUpMobile 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    top: auto;
+  }
+
+  @keyframes slideUpMobile {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* 👉 Header sticky para mejor UX */
+  .modal-header {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+    padding: 8px 0 10px;
+  }
+
+  /* 📦 Espaciado interior */
+  .modal-content {
+    overflow-y: auto;
+    flex: 1;
+    padding-bottom: 20px;
+  }
+
+  /* 🧾 Secciones */
+  .info-cliente,
+  .info-items {
+    margin-bottom: 16px;
+  }
+
+  .info-items table {
+    min-width: 480px;
+  }
+
+  .scroll-table {
+    overflow-x: auto;
+  }
+
+  /* 🔘 Footer botones full width */
+  .modal-footer {
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 12px;
+  }
+
+  .btn-close,
+  .btn-export {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border-radius: 10px;
+  }
+}

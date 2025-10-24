@@ -20,6 +20,7 @@
     flex: 1; /* que crezca y permita scroll interno */
     overflow-y: hidden;
     padding: 16px;
+    justify-content: space-between;
   }
   
   
@@ -79,7 +80,7 @@
   
   .item-header {
     display: flex;
-    justify-content: space-between;
+    gap: 16px;
     align-items: center;
   }
   
@@ -187,4 +188,10 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4); /* Ajusta opacidad según gusto */
     z-index: 999; /* Justo debajo del .cart-panel que está en 1000 */
+  }
+
+  @media (max-width: 767px) {
+    .cart-panel {
+      width: 100%;
+    }
   }

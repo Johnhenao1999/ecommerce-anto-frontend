@@ -55,6 +55,7 @@ const Sidebar = () => {
         <ul className="sidebar-links">
           <li onClick={() => navigate('/admin/list-products')}>Productos</li>
           <li onClick={() => navigate('/admin/categorias')}>Categorías</li>
+          <li onClick={() => navigate('/admin/ordenes')}>Órdenes</li>
           <li onClick={() => navigate('/admin/agregar-productos')}>Agregar Productos</li>
           <li onClick={cerrarSesion}>Cerrar sesión</li>
         </ul>

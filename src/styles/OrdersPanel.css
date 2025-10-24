@@ -1,0 +1,105 @@
+.orders-panel {
+  padding: 24px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.orders-panel h2 {
+  color: #E92B63;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.orders-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.orders-controls select {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.orders-table {
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: #fff;
+}
+
+.orders-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table th, .orders-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.orders-table th {
+  background: #FDE8EF;
+  color: #E92B63;
+  font-weight: 600;
+}
+
+.estado-select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.estado-select.recibido {
+  background: #ffe3e3;
+}
+
+.estado-select.en-preparación {
+  background: #fff8db;
+}
+
+.estado-select.en-camino {
+  background: #e5f3ff;
+}
+
+.estado-select.listo {
+  background: #d9ffd9;
+}
+
+.estado-select.cancelado {
+  background: #f5d0d0;
+}
+
+.btn-detalle {
+  background: #E92B63;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-detalle:hover {
+  background: #c92155;
+}
+
+.message {
+  text-align: center;
+  padding: 8px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background: #f7f7f7;
+  color: #333;
+}
+
+.loading {
+  text-align: center;
+  color: #555;
+  margin-top: 30px;
+}

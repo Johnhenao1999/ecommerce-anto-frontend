@@ -12,6 +12,7 @@ import AdminHome from './pages/admin/AdminHome';
 import Login from './pages/Login';
 import Categories from './pages/admin/Categories';
 import RutaProtegida from './components/RutaProtegida';
+import OrdersPanel from './pages/admin/OrdersPanel';
 import { Analytics } from '@vercel/analytics/react'; // ✅ corregido (quitado el “s” extra)
 import './App.css';
 
@@ -32,6 +33,8 @@ function AppContent() {
         <Route path="/admin/list-products" element={<RutaProtegida><ProductList /></RutaProtegida>} />
         <Route path="/admin/crear-categoria" element={<RutaProtegida><CrearCategoria /></RutaProtegida>} />
         <Route path="/admin/categorias" element={<RutaProtegida><Categories /></RutaProtegida>} />
+        <Route path="/admin/ordenes" element={<RutaProtegida><OrdersPanel /></RutaProtegida>} />
+
 
         {/* 🔓 Ruta pública */}
         <Route path="/login" element={<Login />} />
