@@ -20,6 +20,7 @@ const OrderDetailModal = ({ visible, onClose, order }) => {
         </div>
 
         <div className="modal-content">
+          {/* 🧍 Información del Cliente */}
           <section className="info-cliente">
             <h4>Cliente</h4>
             <p><strong>Nombre:</strong> {cliente?.nombre}</p>
@@ -27,10 +28,19 @@ const OrderDetailModal = ({ visible, onClose, order }) => {
             <p><strong>Dirección:</strong> {cliente?.direccion}</p>
             <p><strong>Ciudad:</strong> {cliente?.ciudad}, {cliente?.departamento}</p>
             <p><strong>Forma de pago:</strong> {cliente?.formaPago}</p>
+
+            {/* 💬 Observaciones (nuevo campo) */}
+            {cliente?.observaciones && (
+              <p className="observaciones">
+                <strong>Observaciones:</strong> {cliente.observaciones}
+              </p>
+            )}
+
             <p><strong>Estado actual:</strong> {estado}</p>
             <p><strong>Fecha de pedido:</strong> {fechaFormateada}</p>
           </section>
 
+          {/* 🛍️ Productos del Pedido */}
           <section className="info-items">
             <h4>Productos</h4>
             <table>

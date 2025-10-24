@@ -1,5 +1,5 @@
 // src/context/CartContext.jsx
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const CartContext = createContext();
 
@@ -9,6 +9,20 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
 
+  // 🧩 Cargar carrito desde localStorage al iniciar
+  useEffect(() => {
+    const storedCart = localStorage.getItem('cartItems');
+    if (storedCart) {
+      setCartItems(JSON.parse(storedCart));
+    }
+  }, []);
+
+  // 💾 Guardar carrito en localStorage cada vez que cambie
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  // ➕ Agregar producto
   const agregarAlCarrito = (producto, cantidad) => {
     const precioFinal = producto.tieneDescuento
       ? producto.precioDescuento
@@ -16,8 +30,8 @@ export const CartProvider = ({ children }) => {
 
     const productoConPrecio = {
       ...producto,
-      precioOriginal: producto.precio, // útil para mostrar el precio tachado si hay descuento
-      precio: precioFinal, // el precio final que se usará en el carrito
+      precioOriginal: producto.precio,
+      precio: precioFinal,
       cantidad,
     };
 
@@ -36,12 +50,14 @@ export const CartProvider = ({ children }) => {
     setMostrarCarrito(true);
   };
 
+  // 🔺 Incrementar cantidad
   const incrementarCantidad = (productoId) => {
     setCartItems(cartItems.map(item =>
       item._id === productoId ? { ...item, cantidad: item.cantidad + 1 } : item
     ));
   };
 
+  // 🔻 Disminuir cantidad
   const disminuirCantidad = (productoId) => {
     setCartItems(cartItems
       .map(item =>
@@ -51,16 +67,19 @@ export const CartProvider = ({ children }) => {
     );
   };
 
+  // ❌ Eliminar producto
   const eliminarDelCarrito = (productoId) => {
     setCartItems(cartItems.filter(item => item._id !== productoId));
   };
 
+  // 🔢 Total de productos
   const cantidadTotal = cartItems.reduce((acc, item) => acc + item.cantidad, 0);
 
-  // 🧹 Vaciar todo el carrito (para cuando se confirme la orden)
+  // 🧹 Vaciar carrito (cuando se confirme la orden)
   const clearCart = () => {
     setCartItems([]);
     setMostrarCarrito(false);
+    localStorage.removeItem('cartItems');
   };
 
   return (
@@ -74,7 +93,7 @@ export const CartProvider = ({ children }) => {
         cantidadTotal,
         mostrarCarrito,
         setMostrarCarrito,
-        clearCart, // 👈 Agregada aquí
+        clearCart,
       }}
     >
       {children}
