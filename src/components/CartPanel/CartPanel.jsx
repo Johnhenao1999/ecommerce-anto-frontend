@@ -3,52 +3,40 @@ import { API_BASE } from '../../utils/api';
 import { useCart } from '../../context/CartContext';
 import OrderModal from '../OrderModal/OrderModal';
 import { formatearCOP } from '../../utils/format';
+import SuccessModal from "../SuccessModal/SuccessModal";
 import './CartPanel.css';
 
 const CartPanel = ({ visible, onClose }) => {
   const { cartItems, incrementarCantidad, disminuirCantidad, eliminarDelCarrito } = useCart();
   const [showModal, setShowModal] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [formaPagoCliente, setFormaPagoCliente] = useState("");
 
   const total = cartItems.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
 
   const handleConfirmOrder = async (userData) => {
-    const mensaje = cartItems.map(item =>
-      `🛍️ ${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toFixed(2)}`
-    ).join('\n');
-
-    const totalTexto = `\n💰 Total: $${total.toFixed(2)}`;
-    const datosUsuario = `
-👤 Nombre: ${userData.nombre}
-📞 Celular: ${userData.celular}
-📍 ${userData.departamento}, ${userData.ciudad}
-🏠 Dirección: ${userData.direccion}
-💳 Forma de pago: ${userData.formaPago}`;
-
-    const textoFinal = `Hola, quiero realizar esta orden:\n\n${mensaje}${totalTexto}\n\n${datosUsuario}\n\nGracias 💖`;
-
-    // 🧩 Paso 1 — Construir el payload para tu API
+    // 🧾 Construir el payload para la API
     const payload = {
       cliente: userData,
       items: cartItems.map(item => ({
         id: item._id,
         nombre: item.nombre,
         cantidad: item.cantidad,
-        precio: item.precio
+        precio: item.precio,
       })),
       total,
-      fecha: new Date().toISOString(),
     };
 
     try {
-      // 🧩 Paso 2 — Enviar al backend
+      console.log("📦 Enviando orden al backend:", payload);
+
+      // 🧩 Enviar al backend
       const res = await fetch(`${API_BASE}/orders`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      console.log("📦 Enviando orden al backend:", payload);
+
       if (!res.ok) {
         console.error("❌ Error al guardar la orden en el backend");
         alert("Hubo un problema al guardar tu orden. Intenta nuevamente.");
@@ -58,17 +46,19 @@ const CartPanel = ({ visible, onClose }) => {
       const data = await res.json();
       console.log("✅ Orden guardada con éxito:", data);
 
-      // 🧩 Paso 3 — Si todo fue bien, abrir WhatsApp
-      const numero = "34611273164";
-      const url = `https://wa.me/${numero}?text=${encodeURIComponent(textoFinal)}`;
-      window.open(url, "_blank");
+      // 🟢 Mostrar modal de éxito
+      setFormaPagoCliente(userData.formaPago);
+      setShowSuccess(true);
 
+      // 🔒 Cerrar modal de ingreso de datos
       setShowModal(false);
+
     } catch (err) {
       console.error("❌ Error de red al guardar la orden:", err);
       alert("No se pudo enviar la orden al servidor.");
     }
   };
+
 
   return (
     <>
@@ -128,6 +118,12 @@ const CartPanel = ({ visible, onClose }) => {
         visible={showModal}
         onClose={() => setShowModal(false)}
         onConfirm={handleConfirmOrder}
+      />
+
+      <SuccessModal
+        visible={showSuccess}
+        formaPago={formaPagoCliente}
+        onClose={() => setShowSuccess(false)}
       />
     </>
   );
