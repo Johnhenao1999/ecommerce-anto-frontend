@@ -103,3 +103,24 @@
   color: #555;
   margin-top: 30px;
 }
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-wpp {
+  background-color: #25D366;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-wpp:hover {
+  background-color: #1ebe5d;
+}
