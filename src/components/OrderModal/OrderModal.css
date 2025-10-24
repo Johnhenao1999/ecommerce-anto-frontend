@@ -8,7 +8,7 @@
   z-index: 998;
 }
 
-.order-modal {
+.order-modal-content {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -22,26 +22,26 @@
   z-index: 999;
 }
 
-.order-modal h3 {
+.order-modal-content h3 {
   text-align: center;
   color: #e92b63;
   margin-bottom: 16px;
 }
 
-.order-modal form {
+.order-modal-content form {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.order-modal label {
+.order-modal-content label {
   font-weight: 600;
   font-size: 14px;
   color: #333;
 }
 
-.order-modal input,
-.order-modal select {
+.order-modal-content input,
+.order-modal-content select {
   padding: 8px 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -49,8 +49,8 @@
   outline: none;
 }
 
-.order-modal input:focus,
-.order-modal select:focus {
+.order-modal-content input:focus,
+.order-modal-content select:focus {
   border-color: #e92b63;
 }
 

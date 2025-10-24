@@ -16,8 +16,8 @@ export const CartProvider = ({ children }) => {
 
     const productoConPrecio = {
       ...producto,
-      precioOriginal: producto.precio,     // útil para mostrar el precio tachado si hay descuento
-      precio: precioFinal,                 // el precio final que se usará en el carrito
+      precioOriginal: producto.precio, // útil para mostrar el precio tachado si hay descuento
+      precio: precioFinal, // el precio final que se usará en el carrito
       cantidad,
     };
 
@@ -57,17 +57,26 @@ export const CartProvider = ({ children }) => {
 
   const cantidadTotal = cartItems.reduce((acc, item) => acc + item.cantidad, 0);
 
+  // 🧹 Vaciar todo el carrito (para cuando se confirme la orden)
+  const clearCart = () => {
+    setCartItems([]);
+    setMostrarCarrito(false);
+  };
+
   return (
-    <CartContext.Provider value={{
-      cartItems,
-      agregarAlCarrito,
-      incrementarCantidad,
-      disminuirCantidad,
-      eliminarDelCarrito,
-      cantidadTotal,
-      mostrarCarrito,
-      setMostrarCarrito,
-    }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        agregarAlCarrito,
+        incrementarCantidad,
+        disminuirCantidad,
+        eliminarDelCarrito,
+        cantidadTotal,
+        mostrarCarrito,
+        setMostrarCarrito,
+        clearCart, // 👈 Agregada aquí
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

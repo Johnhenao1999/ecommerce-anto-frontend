@@ -26,7 +26,7 @@ const OrderModal = ({ visible, onClose, onConfirm }) => {
   return (
     <>
       <div className="modal-backdrop" onClick={onClose}></div>
-      <div className="order-modal">
+      <div className="order-modal-content">
         <h3>Completa tu información</h3>
         <form onSubmit={handleSubmit}>
           <label>Nombre</label>
