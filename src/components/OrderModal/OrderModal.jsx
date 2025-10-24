@@ -10,6 +10,7 @@ const OrderModal = ({ visible, onClose, onConfirm }) => {
     ciudad: "",
     direccion: "",
     formaPago: "Efectivo",
+    observaciones: "", // 👈 agregado
   });
 
   const [departamentosFiltrados, setDepartamentosFiltrados] = useState(departamentosData);
@@ -188,6 +189,18 @@ const OrderModal = ({ visible, onClose, onConfirm }) => {
               <option value="Nequi">Nequi</option>
               <option value="Daviplata">Daviplata</option>
             </select>
+          </div>
+
+          <div className="form-group">
+            <label>Observaciones (opcional)</label>
+            <textarea
+              name="observaciones"
+                placeholder="Ej: Comentarios sobre el pedido, tonos preferidos, detalles de entrega o instrucciones especiales 💖"
+              value={form.observaciones || ""}
+              onChange={(e) => setForm({ ...form, observaciones: e.target.value })}
+              rows={3}
+              style={{ resize: "none" }}
+            />
           </div>
 
           <div className="modal-actions">
