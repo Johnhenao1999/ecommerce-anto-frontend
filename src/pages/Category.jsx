@@ -8,7 +8,7 @@ import '../styles/category.css';
 import { obtenerProducts } from '../services/categoriasService';
 
 const Categoria = () => {
-  const { categoriaSlug } = useParams();
+  const { categoriaSlug, subcategoriaSlug } = useParams(); // 👈 ahora tenemos ambos
   const [categoria, setCategoria] = useState(null);
   const [subcategoriaActiva, setSubcategoriaActiva] = useState(null);
   const [paginaActual, setPaginaActual] = useState(1);
@@ -21,28 +21,30 @@ const Categoria = () => {
         const encontrada = categorias.find(cat => cat.slug === categoriaSlug);
         setCategoria(encontrada);
         setPaginaActual(1);
+
+        // 👇 Si hay subcategoriaSlug en la URL, activarla
+        if (subcategoriaSlug && encontrada) {
+          const sub = encontrada.subcategorias.find(s => s.slug === subcategoriaSlug);
+          if (sub) setSubcategoriaActiva(sub.slug);
+        } else {
+          setSubcategoriaActiva(null);
+        }
       } catch (error) {
         console.error('Error al cargar categorías:', error);
       }
     };
 
     cargarDatos();
-  }, [categoriaSlug]);
+  }, [categoriaSlug, subcategoriaSlug]);
 
-  // 👇 Ajustar productos por página según ancho
+  // Ajustar cantidad de productos según tamaño de pantalla
   useEffect(() => {
     const actualizarProductosPorPagina = () => {
       const width = window.innerWidth;
-
-      if (width <= 768) {
-        setProductosPorPagina(8); // 🔹 siempre 8 productos en mobile
-      } else if (width <= 1200) {
-        setProductosPorPagina(6); // 2 filas x 3 columnas en tablet
-      } else {
-        setProductosPorPagina(8); // 2 filas x 4 columnas en desktop
-      }
+      if (width <= 768) setProductosPorPagina(8);
+      else if (width <= 1200) setProductosPorPagina(6);
+      else setProductosPorPagina(8);
     };
-
     actualizarProductosPorPagina();
     window.addEventListener('resize', actualizarProductosPorPagina);
     return () => window.removeEventListener('resize', actualizarProductosPorPagina);
@@ -62,7 +64,6 @@ const Categoria = () => {
     productos = [...productosCategoria, ...productosSubcategorias];
   }
 
-  // 🔹 Paginación
   const totalPaginas = Math.ceil(productos.length / productosPorPagina);
   const indiceInicial = (paginaActual - 1) * productosPorPagina;
   const productosPaginados = productos.slice(indiceInicial, indiceInicial + productosPorPagina);
@@ -105,7 +106,6 @@ const Categoria = () => {
             )}
           </div>
 
-          {/* 🔹 Paginador */}
           {totalPaginas > 1 && (
             <div className="paginador">
               <button
