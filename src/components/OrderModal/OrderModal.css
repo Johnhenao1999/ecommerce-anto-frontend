@@ -194,12 +194,12 @@ textarea:focus {
   outline: none;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 767px) {
   .order-modal-content {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    max-height: 90vh; /* limita la altura al 90% de la pantalla */
+    max-height: 90dvh; /* limita la altura al 90% de la pantalla */
     overflow-y: auto; /* permite desplazamiento vertical */
     margin-top: 20px;
     margin-bottom: 20px;
