@@ -1,25 +1,20 @@
-/* === Panel general === */
 .cart-panel {
   position: fixed;
   top: 0;
   right: -400px;
   width: 400px;
   height: 100%;
+  display: flex;
+  flex-direction: column;
   background-color: #fff;
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
   transition: right 0.35s ease, opacity 0.3s ease, transform 0.3s ease;
   z-index: 1000;
   font-family: 'Poppins', sans-serif;
-  display: flex;
-  flex-direction: column;
   opacity: 0;
   transform: translateX(10px);
   overscroll-behavior: contain;
-  /* evita el rebote del scroll en móviles */
   -webkit-overflow-scrolling: touch;
-  /* suaviza scroll en iOS */
-  touch-action: none;
-  /* evita que el gesto de scroll mueva el body */
 }
 
 .cart-panel.visible {
@@ -36,7 +31,6 @@
   background-color: #fdf0f5;
   padding: 16px;
   border-bottom: 1px solid #eee;
-  margin-bottom: 12px;
 }
 
 .cart-title {
@@ -65,14 +59,11 @@
   color: #d63384;
 }
 
-/* === Cuerpo === */
+/* === Lista de productos === */
 .cart-panel-content {
-  display: flex;
-  flex-direction: column;
   flex: 1;
   overflow-y: auto;
   padding: 16px;
-  justify-content: space-between;
 }
 
 .cart-list {
@@ -98,20 +89,6 @@
   object-fit: cover;
 }
 
-.delete-btn {
-  background: none;
-  border: none;
-  color: #d63384;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: color 0.2s;
-}
-
-.delete-btn:hover {
-  color: #b42c6e;
-}
-
-/* === Controles de cantidad === */
 .item-controls {
   display: flex;
   align-items: center;
@@ -142,23 +119,27 @@
   background-color: #e0e0e0;
 }
 
-/* === Subtotales === */
-.item-pricing {
-  margin-top: 8px;
+.delete-btn {
+  background: none;
+  border: none;
+  color: #d63384;
+  cursor: pointer;
   font-size: 0.9rem;
-  color: #555;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  transition: color 0.2s;
 }
 
-/* === Footer === */
+.delete-btn:hover {
+  color: #b42c6e;
+}
+
+/* === Footer fijo === */
 .cart-footer {
   border-top: 1px solid #eee;
-  padding: 16px 0;
   background-color: #fff;
+  padding: 16px;
   position: sticky;
   bottom: 0;
+  z-index: 10;
 }
 
 .cart-footer h3 {
@@ -204,7 +185,7 @@
   background-color: #fef0f5;
 }
 
-/* === Fondo oscuro === */
+/* === Backdrop === */
 .cart-backdrop {
   position: fixed;
   top: 0;
@@ -222,7 +203,7 @@
   opacity: 1;
 }
 
-/* === Scroll interior elegante === */
+/* Scroll personalizado */
 .cart-panel-content::-webkit-scrollbar {
   width: 6px;
 }
@@ -253,6 +234,10 @@
 
   .cart-panel-content {
     padding: 12px;
+  }
+
+  .cart-footer {
+    padding: 14px;
   }
 
   .cart-actions {

@@ -14,19 +14,17 @@ const CartPanel = ({ visible, onClose }) => {
 
   const total = cartItems.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
 
-  // 🧠 Bloquear scroll del fondo cuando hay modales abiertos
+  // Bloquear scroll del fondo cuando el panel esté visible
   useEffect(() => {
-    if (visible) {
+    if (visible || showModal || showSuccess) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
-
-    // Limpieza al desmontar
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [visible]);
+  }, [visible, showModal, showSuccess]);
 
   const handleConfirmOrder = async (userData) => {
     const payload = {
@@ -50,7 +48,6 @@ const CartPanel = ({ visible, onClose }) => {
       });
 
       if (!res.ok) {
-        console.error("❌ Error al guardar la orden en el backend");
         alert("Hubo un problema al guardar tu orden. Intenta nuevamente.");
         return;
       }
@@ -58,14 +55,9 @@ const CartPanel = ({ visible, onClose }) => {
       const data = await res.json();
       console.log("✅ Orden guardada con éxito:", data);
 
-      // 🟢 Mostrar modal de éxito
       setFormaPagoCliente(userData.formaPago);
       setShowSuccess(true);
-
-      // 🔒 Cerrar modal de ingreso de datos
       setShowModal(false);
-
-      // 🧹 Vaciar carrito después del pedido
       clearCart();
 
     } catch (err) {
@@ -76,12 +68,11 @@ const CartPanel = ({ visible, onClose }) => {
 
   return (
     <>
-      {/* 🔹 Panel visible solo si no hay modales activos */}
       {visible && !showModal && !showSuccess && (
         <>
           <div className="cart-backdrop" onClick={onClose}></div>
 
-          <div className={`cart-panel visible`}>
+          <div className="cart-panel visible">
             <div className="cart-header">
               <div className="cart-title">
                 <h2>Mi carrito</h2>
@@ -92,34 +83,33 @@ const CartPanel = ({ visible, onClose }) => {
             {cartItems.length === 0 ? (
               <p style={{ padding: "16px" }}>No hay productos en el carrito.</p>
             ) : (
-              <div className="cart-panel-content">
-                <ul className="cart-list">
-                  {cartItems.map(item => (
-                    <li key={item._id} className="cart-item">
-                      <div className='item-header'>
-                        <img src={item.imagen} width={80} alt={item.nombre} />
-                        <strong>{item.nombre}</strong>
-                      </div>
-                      <div className="item-controls">
-                        <button className='qty-btn' onClick={() => disminuirCantidad(item._id)}>−</button>
-                        <input type="number" value={item.cantidad} readOnly />
-                        <button className='qty-btn' onClick={() => incrementarCantidad(item._id)}>+</button>
-                      </div>
-                      <div>
-                        <span>Subtotal: {formatearCOP(item.precio * item.cantidad)}</span>
-                      </div>
-                      <button className='delete-btn' onClick={() => eliminarDelCarrito(item._id)}>Eliminar</button>
-                    </li>
-                  ))}
-                </ul>
+              <>
+                <div className="cart-panel-content">
+                  <ul className="cart-list">
+                    {cartItems.map(item => (
+                      <li key={item._id} className="cart-item">
+                        <div className='item-header'>
+                          <img src={item.imagen} width={80} alt={item.nombre} />
+                          <strong>{item.nombre}</strong>
+                        </div>
+                        <div className="item-controls">
+                          <button className='qty-btn' onClick={() => disminuirCantidad(item._id)}>−</button>
+                          <input type="number" value={item.cantidad} readOnly />
+                          <button className='qty-btn' onClick={() => incrementarCantidad(item._id)}>+</button>
+                        </div>
+                        <div>
+                          <span>Subtotal: {formatearCOP(item.precio * item.cantidad)}</span>
+                        </div>
+                        <button className='delete-btn' onClick={() => eliminarDelCarrito(item._id)}>Eliminar</button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
                 <div className="cart-footer">
                   <h3>Total: {formatearCOP(total)}</h3>
                   <div className="cart-actions">
-                    <button
-                      className="btn-order"
-                      onClick={() => setShowModal(true)}
-                    >
+                    <button className="btn-order" onClick={() => setShowModal(true)}>
                       Realizar orden
                     </button>
                     <button className="btn-secondary" onClick={onClose}>
@@ -127,26 +117,24 @@ const CartPanel = ({ visible, onClose }) => {
                     </button>
                   </div>
                 </div>
-              </div>
+              </>
             )}
           </div>
         </>
       )}
 
-      {/* 🔹 Modal de datos del usuario */}
       <OrderModal
         visible={showModal}
         onClose={() => setShowModal(false)}
         onConfirm={handleConfirmOrder}
       />
 
-      {/* 🔹 Modal de éxito */}
       <SuccessModal
         visible={showSuccess}
         formaPago={formaPagoCliente}
         onClose={() => {
           setShowSuccess(false);
-          onClose(); // cierra todo el flujo
+          onClose();
         }}
       />
     </>
