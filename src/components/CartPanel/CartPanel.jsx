@@ -16,12 +16,17 @@ const CartPanel = ({ visible, onClose }) => {
 
   // 🧠 Bloquear scroll del fondo cuando hay modales abiertos
   useEffect(() => {
-    if (showModal || showSuccess) {
+    if (visible) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
-  }, [showModal, showSuccess]);
+
+    // Limpieza al desmontar
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [visible]);
 
   const handleConfirmOrder = async (userData) => {
     const payload = {
