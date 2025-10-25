@@ -1,45 +1,52 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import Header from '../components/Header/Header';
-import Footer from '../components/Footer/Footer';
-import { useCart } from '../context/CartContext';
-import { formatearCOP } from '../utils/format';
-import '../styles/productDetail.css';
-import { obtenerProducts } from '../services/categoriasService'; 
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import Header from "../components/Header/Header";
+import Footer from "../components/Footer/Footer";
+import { useCart } from "../context/CartContext";
+import { useProducts } from "../context/ProductContext";
+import { formatearCOP } from "../utils/format";
+import FullScreenLoader from '../components/Loader/FullScreenLoader';
+import "../styles/productDetail.css";
 
 const ProductoDetalle = () => {
   const { productoId } = useParams();
   const { agregarAlCarrito } = useCart();
+  const { productos, loading, error } = useProducts();
+
   const [cantidad, setCantidad] = useState(1);
   const [producto, setProducto] = useState(null);
 
   useEffect(() => {
-    const cargarProducto = async () => {
-      try {
-        const { categorias } = await obtenerProducts(); // ✅
-  
-        let encontrado = null;
-        categorias.forEach(cat => {
-          if (cat.productos) {
-            encontrado = cat.productos.find(p => p.slug === productoId) || encontrado;
-          }
-          if (cat.subcategorias) {
-            cat.subcategorias.forEach(sub => {
-              encontrado = sub.productos.find(p => p.slug === productoId) || encontrado;
-            });
-          }
-        });
-  
-        setProducto(encontrado);
-      } catch (err) {
-        console.error('Error al cargar producto', err);
-      }
-    };
-  
-    cargarProducto();
-  }, [productoId]);
+    if (productos.length) {
+      const encontrado = productos.find((p) => p.slug === productoId);
+      setProducto(encontrado || null);
+    }
+  }, [productoId, productos]);
 
-  if (!producto) return <p>Producto no encontrado</p>;
+
+  if (loading) return <FullScreenLoader message="Cargando productos..." />;
+
+  if (error) {
+    return (
+      <p style={{ textAlign: "center", padding: "40px", color: "red" }}>
+        Error al cargar los productos: {error}
+      </p>
+    );
+  }
+
+  if (!producto) {
+    return (
+      <>
+        <Header />
+        <main className="producto-detalle">
+          <p style={{ textAlign: "center", padding: "60px" }}>
+            Producto no encontrado 🥺
+          </p>
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   const handleAgregarAlCarrito = () => {
     agregarAlCarrito(producto, cantidad);
@@ -49,23 +56,40 @@ const ProductoDetalle = () => {
     <>
       <Header />
       <main className="producto-detalle">
+        {/* Imagen */}
         <img
           className="producto-detalle-img"
-          src={`${producto.imagen}`}
+          src={producto.imagen}
           alt={producto.nombre}
         />
-        <div className="producto-detalle-info">
-          <h1>{producto.nombre} - {producto.marca}</h1>
-          <p>{producto.descripcion}</p>
-          <strong>{formatearCOP(producto.precio)}</strong>
 
+        {/* Información */}
+        <div className="producto-detalle-info">
+          <h1>
+            {producto.nombre} {producto.marca ? `- ${producto.marca}` : ""}
+          </h1>
+          <p>{producto.descripcion}</p>
+
+          <strong className="precio">
+            {formatearCOP(producto.precio)}
+          </strong>
+
+          {/* Estado del stock */}
           <p className="disponibilidad">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#129e20" viewBox="0 0 24 24" style={{ marginRight: '6px', verticalAlign: 'middle' }}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              fill="#129e20"
+              viewBox="0 0 24 24"
+              style={{ marginRight: "6px", verticalAlign: "middle" }}
+            >
               <path d="M9 16.2l-4.2-4.2-1.4 1.4L9 19 21 7l-1.4-1.4z" />
             </svg>
             Disponible en stock
           </p>
 
+          {/* Cantidad + botón */}
           <div className="producto-cantidad">
             <input
               type="number"
@@ -75,13 +99,20 @@ const ProductoDetalle = () => {
             />
             <button onClick={handleAgregarAlCarrito} className="btn-agregar">
               Agregar al carrito
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                viewBox="0 0 16 16">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                viewBox="0 0 16 16"
+                style={{ marginLeft: "6px" }}
+              >
                 <path d="M8 1a2 2 0 0 1 1.995 1.85L10 3h4.5a.5.5 0 0 1 .49.598l-1.5 7A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.49-.598l1.5-7A.5.5 0 0 1 5.5 3H10a2 2 0 0 1-2-2Zm2 3H5.5l-1.3 6h9.6l-1.3-6ZM5 12a1 1 0 1 0 0 2 1 1 0 0 0 0-2Zm7 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2Z" />
               </svg>
             </button>
           </div>
 
+          {/* Beneficios */}
           <div className="beneficios">
             <div>
               <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">

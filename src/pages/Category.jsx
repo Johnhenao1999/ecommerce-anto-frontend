@@ -6,6 +6,7 @@ import ProductCard from '../components/ProductCard/ProductCard';
 import Footer from '../components/Footer/Footer';
 import '../styles/category.css';
 import { obtenerProducts } from '../services/categoriasService';
+import FullScreenLoader from '../components/Loader/FullScreenLoader';
 
 const Categoria = () => {
   const { categoriaSlug, subcategoriaSlug } = useParams(); // 👈 ahora tenemos ambos
@@ -50,7 +51,7 @@ const Categoria = () => {
     return () => window.removeEventListener('resize', actualizarProductosPorPagina);
   }, []);
 
-  if (!categoria) return <p>Categoría no encontrada</p>;
+  if (!categoria) return <FullScreenLoader message="Cargando productos..." />;
 
   const subcategorias = categoria.subcategorias || [];
   let productos = [];

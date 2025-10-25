@@ -13,7 +13,9 @@ import Login from './pages/Login';
 import Categories from './pages/admin/Categories';
 import RutaProtegida from './components/RutaProtegida';
 import OrdersPanel from './pages/admin/OrdersPanel';
-import { Analytics } from '@vercel/analytics/react'; // ✅ corregido (quitado el “s” extra)
+import { Analytics } from '@vercel/analytics/react';
+import { ProductProvider } from "./context/ProductContext";
+import { CategoryProvider } from "./context/CategoryContext";
 import './App.css';
 
 function AppContent() {
@@ -50,8 +52,11 @@ function AppContent() {
 export default function App() {
   return (
     <Router>
-      <AppContent />
-      {/* 🔍 Analytics debe ir aquí, para medir TODAS las rutas */}
+      <ProductProvider>
+        <CategoryProvider>
+          <AppContent />
+        </CategoryProvider>
+      </ProductProvider>
       <Analytics />
     </Router>
   );
