@@ -1,29 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import '../../styles/AdminPanel.css';
-import Navbar from '../../components/Navbar/Navbar';
-import { obtenerCategorias } from '../../services/categoriasService';
-import { API_BASE } from '../../utils/api';
+import React, { useState, useEffect } from "react";
+import "../../styles/AdminPanel.css";
+import Navbar from "../../components/Navbar/Navbar";
+import { API_BASE } from "../../utils/api";
+import { useProducts } from "../../context/ProductContext";
+import { useCategories } from "../../context/CategoryContext";
 
 const AdminPanel = () => {
-  const preset_name = 'anto_store';
-  const cloud_name = 'djzdunsof';
+  const preset_name = "anto_store";
+  const cloud_name = "djzdunsof";
+
+  const { refreshCache } = useProducts(); // 🔄 para refrescar productos al crear uno nuevo
+  const { categorias, loading: loadingCategorias } = useCategories(); // ✅ categorías del contexto
 
   const [formData, setFormData] = useState({
-    nombre: '',
-    descripcion: '',
-    precio: '',
-    marca: '',
-    imagen: '',
-    stock: '',
-    categoria: '',
-    subcategoria: '',
+    nombre: "",
+    descripcion: "",
+    precio: "",
+    marca: "",
+    imagen: "",
+    stock: "",
+    categoria: "",
+    subcategoria: "",
     tieneDescuento: false,
-    porcentajeDescuento: ''
+    porcentajeDescuento: "",
   });
 
-  const [categoriasData, setCategoriasData] = useState({});
   const [subcategorias, setSubcategorias] = useState([]);
-  const [mensaje, setMensaje] = useState('');
+  const [mensaje, setMensaje] = useState("");
   const [subiendo, setSubiendo] = useState(false);
 
   const formatCOP = (value) => {
@@ -37,22 +40,15 @@ const AdminPanel = () => {
     });
   };
 
+  // 🧠 Al cambiar de categoría, mostrar sus subcategorías
   useEffect(() => {
-    const cargarCategorias = async () => {
-      try {
-        const data = await obtenerCategorias();
-        const formato = {};
-        data.forEach(cat => {
-          formato[cat.nombre] = cat.subcategorias.map(sub => sub.nombre);
-        });
-        setCategoriasData(formato);
-      } catch (error) {
-        console.error('Error al cargar categorías:', error);
-      }
-    };
-
-    cargarCategorias();
-  }, []);
+    if (formData.categoria && categorias.length > 0) {
+      const categoriaSeleccionada = categorias.find(
+        (cat) => cat.nombre === formData.categoria
+      );
+      setSubcategorias(categoriaSeleccionada?.subcategorias || []);
+    }
+  }, [formData.categoria, categorias]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -61,10 +57,11 @@ const AdminPanel = () => {
       setFormData((prev) => ({
         ...prev,
         [name]: checked,
-        ...(name === "tieneDescuento" && !checked ? { porcentajeDescuento: "" } : {})
+        ...(name === "tieneDescuento" && !checked
+          ? { porcentajeDescuento: "" }
+          : {}),
       }));
     } else if (name === "precio") {
-      // elimina caracteres no numéricos antes de guardar
       const numericValue = value.replace(/\D/g, "");
       setFormData((prev) => ({
         ...prev,
@@ -78,7 +75,7 @@ const AdminPanel = () => {
     }
 
     if (name === "categoria") {
-      setSubcategorias(categoriasData[value] || []);
+      setSubcategorias([]);
       setFormData((prev) => ({ ...prev, subcategoria: "" }));
     }
   };
@@ -89,19 +86,22 @@ const AdminPanel = () => {
 
     setSubiendo(true);
     const form = new FormData();
-    form.append('file', file);
-    form.append('upload_preset', preset_name);
-    form.append('cloud_name', cloud_name);
+    form.append("file", file);
+    form.append("upload_preset", preset_name);
+    form.append("cloud_name", cloud_name);
 
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
-        method: 'POST',
-        body: form
-      });
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
+        {
+          method: "POST",
+          body: form,
+        }
+      );
       const data = await res.json();
       setFormData((prev) => ({ ...prev, imagen: data.secure_url }));
     } catch (err) {
-      console.error('Error al subir imagen:', err);
+      console.error("Error al subir imagen:", err);
     } finally {
       setSubiendo(false);
     }
@@ -119,43 +119,50 @@ const AdminPanel = () => {
       marca: formData.marca,
       imagen: formData.imagen,
       tieneDescuento: formData.tieneDescuento,
-      porcentajeDescuento: formData.tieneDescuento ? parseFloat(formData.porcentajeDescuento) : 0
+      porcentajeDescuento: formData.tieneDescuento
+        ? parseFloat(formData.porcentajeDescuento)
+        : 0,
     };
 
     try {
       const res = await fetch(`${API_BASE}/products`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        console.error('❌ Error del servidor:', data);
-        setMensaje('❌ Error al agregar producto');
+        console.error("❌ Error del servidor:", data);
+        setMensaje("❌ Error al agregar producto");
         return;
       }
 
-      console.log('✅ Producto agregado:', data);
-      setMensaje('✅ Producto agregado correctamente');
+      console.log("✅ Producto agregado:", data);
+      setMensaje("✅ Producto agregado correctamente");
 
+      // 🔄 Refrescar productos cacheados automáticamente
+      await refreshCache();
+
+      // Limpiar formulario
       setFormData({
-        nombre: '',
-        descripcion: '',
-        precio: '',
-        marca: '',
-        imagen: '',
-        categoria: '',
-        subcategoria: '',
+        nombre: "",
+        descripcion: "",
+        precio: "",
+        marca: "",
+        imagen: "",
+        categoria: "",
+        subcategoria: "",
         tieneDescuento: false,
-        porcentajeDescuento: ''
+        porcentajeDescuento: "",
       });
+      setSubcategorias([]);
     } catch (err) {
-      console.error('❌ Error al enviar al backend:', err);
-      setMensaje('❌ Error de conexión al servidor');
+      console.error("❌ Error al enviar al backend:", err);
+      setMensaje("❌ Error de conexión al servidor");
     }
   };
 
@@ -164,114 +171,158 @@ const AdminPanel = () => {
       <Navbar />
       <div className="admin-panel section-admin">
         <h2>Agregar producto</h2>
-        <form onSubmit={handleSubmit} className="product-form">
-          <div className="row">
-            <div className="form-group">
-              <label>Categoría</label>
-              <select name="categoria" value={formData.categoria} onChange={handleChange} required>
-                <option value="">Selecciona categoría</option>
-                {Object.keys(categoriasData).map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-            </div>
 
-            {subcategorias.length > 0 && (
+        {loadingCategorias ? (
+          <p>Cargando categorías...</p>
+        ) : (
+          <form onSubmit={handleSubmit} className="product-form">
+            <div className="row">
               <div className="form-group">
-                <label>Subcategoría</label>
-                <select name="subcategoria" value={formData.subcategoria} onChange={handleChange} required>
-                  <option value="">Selecciona subcategoría</option>
-                  {subcategorias.map((sub) => (
-                    <option key={sub} value={sub}>{sub}</option>
+                <label>Categoría</label>
+                <select
+                  name="categoria"
+                  value={formData.categoria}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Selecciona categoría</option>
+                  {categorias.map((cat) => (
+                    <option key={cat._id} value={cat.nombre}>
+                      {cat.nombre}
+                    </option>
                   ))}
                 </select>
               </div>
-            )}
-          </div>
 
-          <div className="row">
-            <div className="form-group">
-              <label>Nombre</label>
-              <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} required />
+              {subcategorias.length > 0 && (
+                <div className="form-group">
+                  <label>Subcategoría</label>
+                  <select
+                    name="subcategoria"
+                    value={formData.subcategoria}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Selecciona subcategoría</option>
+                    {subcategorias.map((sub) => (
+                      <option key={sub._id} value={sub.nombre}>
+                        {sub.nombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
-            <div className="form-group">
-              <label>Marca</label>
-              <input type="text" name="marca" value={formData.marca} onChange={handleChange} required />
-            </div>
-          </div>
 
-          <div className="form-group">
-            <label>Descripción</label>
-            <textarea name="descripcion" value={formData.descripcion} onChange={handleChange} required />
-          </div>
-
-          <div className="row">
-            <div className="form-group">
-              <label>Precio</label>
-              <input
-                type="text"
-                name="precio"
-                value={formatCOP(formData.precio)}
-                onChange={handleChange}
-                placeholder="$ 0"
-                required
-              />
-            </div>
-          </div>
-
-          <div className='row'>
-            <div className="form-group">
-              <label className='label-sale'>
-                <input
-                  type="checkbox"
-                  name="tieneDescuento"
-                  checked={formData.tieneDescuento}
-                  onChange={handleChange}
-                />
-                ¿Tiene descuento?
-              </label>
-            </div>
-            {formData.tieneDescuento && (
+            <div className="row">
               <div className="form-group">
-                <label>Porcentaje de descuento (%)</label>
+                <label>Nombre</label>
                 <input
-                  type="number"
-                  name="porcentajeDescuento"
-                  value={formData.porcentajeDescuento}
-                  min="1"
-                  max="100"
+                  type="text"
+                  name="nombre"
+                  value={formData.nombre}
                   onChange={handleChange}
                   required
                 />
-                {formData.precio && (
-                  <small>
-                    Precio final: ${(
-                      formData.precio -
-                      (formData.precio * formData.porcentajeDescuento) / 100
-                    ).toFixed(2)}
-                  </small>
-                )}
               </div>
-            )}
-          </div>
+              <div className="form-group">
+                <label>Marca</label>
+                <input
+                  type="text"
+                  name="marca"
+                  value={formData.marca}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
 
-          <div className="form-group">
-            <label>Imagen</label>
-            <input type="file" accept="image/*" onChange={handleImageUpload} />
-            {subiendo ? (
-              <small>Subiendo imagen...</small>
-            ) : formData.imagen && (
-              <img
-                src={formData.imagen}
-                alt="preview"
-                style={{ marginTop: '10px', width: '100px', borderRadius: '8px' }}
+            <div className="form-group">
+              <label>Descripción</label>
+              <textarea
+                name="descripcion"
+                value={formData.descripcion}
+                onChange={handleChange}
+                required
               />
-            )}
-          </div>
+            </div>
 
-          <button type="submit">Agregar producto</button>
-          {mensaje && <div className="success-message">{mensaje}</div>}
-        </form>
+            <div className="row">
+              <div className="form-group">
+                <label>Precio</label>
+                <input
+                  type="text"
+                  name="precio"
+                  value={formatCOP(formData.precio)}
+                  onChange={handleChange}
+                  placeholder="$ 0"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="form-group">
+                <label className="label-sale">
+                  <input
+                    type="checkbox"
+                    name="tieneDescuento"
+                    checked={formData.tieneDescuento}
+                    onChange={handleChange}
+                  />
+                  ¿Tiene descuento?
+                </label>
+              </div>
+
+              {formData.tieneDescuento && (
+                <div className="form-group">
+                  <label>Porcentaje de descuento (%)</label>
+                  <input
+                    type="number"
+                    name="porcentajeDescuento"
+                    value={formData.porcentajeDescuento}
+                    min="1"
+                    max="100"
+                    onChange={handleChange}
+                    required
+                  />
+                  {formData.precio && (
+                    <small>
+                      Precio final: $
+                      {(
+                        formData.precio -
+                        (formData.precio * formData.porcentajeDescuento) / 100
+                      ).toFixed(2)}
+                    </small>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label>Imagen</label>
+              <input type="file" accept="image/*" onChange={handleImageUpload} />
+              {subiendo ? (
+                <small>Subiendo imagen...</small>
+              ) : (
+                formData.imagen && (
+                  <img
+                    src={formData.imagen}
+                    alt="preview"
+                    style={{
+                      marginTop: "10px",
+                      width: "100px",
+                      borderRadius: "8px",
+                    }}
+                  />
+                )
+              )}
+            </div>
+
+            <button type="submit">Agregar producto</button>
+            {mensaje && <div className="success-message">{mensaje}</div>}
+          </form>
+        )}
       </div>
     </>
   );

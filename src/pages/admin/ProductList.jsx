@@ -1,71 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import '../../styles/ProductList.css';
-import Navbar from '../../components/Navbar/Navbar';
-import { obtenerCategorias } from '../../services/categoriasService';
-import { formatearCOP } from '../../utils/format';
-import { API_BASE } from '../../utils/api';
-
+import React, { useState } from "react";
+import "../../styles/ProductList.css";
+import Navbar from "../../components/Navbar/Navbar";
+import { formatearCOP } from "../../utils/format";
+import { API_BASE } from "../../utils/api";
+import { useProducts } from "../../context/ProductContext";
+import { useCategories } from "../../context/CategoryContext";
 
 const ProductList = () => {
-  const [productos, setProductos] = useState([]);
-  const [filtro, setFiltro] = useState({ nombre: '', categoria: '', subcategoria: '' });
+  const { productos, refreshCache } = useProducts();
+  const { categorias } = useCategories();
+  const [filtro, setFiltro] = useState({ nombre: "", categoria: "", subcategoria: "" });
   const [paginaActual, setPaginaActual] = useState(1);
   const [productosPorPagina] = useState(8);
   const [productoEditando, setProductoEditando] = useState(null);
-  const [categoriasData, setCategoriasData] = useState({});
-  const preset_name = 'anto_store';
-  const cloud_name = 'djzdunsof';
+  const preset_name = "anto_store";
+  const cloud_name = "djzdunsof";
 
-  useEffect(() => {
-    const cargarCategorias = async () => {
-      try {
-        const data = await obtenerCategorias();
-        const formato = {};
-        data.forEach(cat => {
-          formato[cat.nombre] = cat.subcategorias.map(sub => sub.nombre);
-        });
-        setCategoriasData(formato);
-      } catch (error) {
-        console.error('Error al cargar categorías:', error);
-      }
-    };
+  const categoriasData = categorias.reduce((acc, cat) => {
+    acc[cat.nombre] = cat.subcategorias.map((s) => s.nombre);
+    return acc;
+  }, {});
 
-    cargarCategorias();
-  }, []);
+  // 🧩 Productos aplanados (por seguridad)
+  const productosAplanados = productos.map((p) => ({
+    ...p,
+    categoria:
+      typeof p.categoria === "object" ? p.categoria?.nombre || "" : p.categoria || "",
+    subcategoria:
+      typeof p.subcategoria === "object"
+        ? p.subcategoria?.nombre || ""
+        : p.subcategoria || "",
+  }));
 
-  useEffect(() => {
-    const fetchProductos = async () => {
-      try {
-        const res = await fetch(`${API_BASE}/products`);
-        const data = await res.json();
-
-        const productosAplanados = data.categorias.flatMap(categoria => {
-          const productosSinSubcategoria = (categoria.productos || []).map(producto => ({
-            ...producto,
-            categoria: categoria.nombre,
-            subcategoria: null
-          }));
-
-          const productosConSubcategorias = (categoria.subcategorias || []).flatMap(subcategoria =>
-            (subcategoria.productos || []).map(producto => ({
-              ...producto,
-              categoria: categoria.nombre,
-              subcategoria: subcategoria.nombre
-            }))
-          );
-
-          return [...productosSinSubcategoria, ...productosConSubcategorias];
-        });
-
-        setProductos(productosAplanados);
-      } catch (err) {
-        console.error('❌ Error cargando productos:', err);
-      }
-    };
-    fetchProductos();
-  }, []);
-
-  const productosFiltrados = productos.filter((p) => {
+  // 🔍 Filtrado
+  const productosFiltrados = productosAplanados.filter((p) => {
     return (
       p.nombre.toLowerCase().includes(filtro.nombre.toLowerCase()) &&
       (filtro.categoria ? p.categoria === filtro.categoria : true) &&
@@ -78,46 +46,62 @@ const ProductList = () => {
   const productosEnPagina = productosFiltrados.slice(inicio, inicio + productosPorPagina);
 
   const cambiarPagina = (nuevaPagina) => {
-    if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
-      setPaginaActual(nuevaPagina);
-    }
+    if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) setPaginaActual(nuevaPagina);
   };
 
-  const categorias = [...new Set(productos.map(p => p.categoria))];
-  const subcategorias = [...new Set(productos.filter(p => p.categoria === filtro.categoria).map(p => p.subcategoria))];
+  const categoriasList = Object.keys(categoriasData);
+  const subcategoriasList = categoriasData[filtro.categoria] || [];
 
+  // 🗑️ Eliminar producto + refrescar cache
   const handleEliminar = async (id) => {
-    const confirmar = window.confirm('¿Estás seguro de que quieres eliminar este producto?');
+    const confirmar = window.confirm("¿Estás seguro de eliminar este producto?");
     if (!confirmar) return;
 
     try {
-      const res = await fetch(`${API_BASE}/products/${id}`, {
-        method: 'DELETE'
-      });
-      if (!res.ok) throw new Error('Error al eliminar');
+      const res = await fetch(`${API_BASE}/products/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Error al eliminar producto");
 
-      setProductos(prev => prev.filter(p => p._id !== id));
+      alert("✅ Producto eliminado correctamente");
+      await refreshCache();
     } catch (err) {
-      console.error('❌ Error al eliminar producto:', err);
-      alert('Error al eliminar producto');
+      console.error("❌ Error al eliminar:", err);
+      alert("Hubo un error al eliminar el producto");
     }
   };
 
+  // ✏️ Seleccionar producto (normalizado)
   const seleccionarProducto = (producto) => {
-    setProductoEditando(producto);
+    const categoriaNombre =
+      typeof producto.categoria === "object"
+        ? producto.categoria?.nombre
+        : producto.categoria;
+    const subcategoriaNombre =
+      typeof producto.subcategoria === "object"
+        ? producto.subcategoria?.nombre
+        : producto.subcategoria;
+
+    // 🔹 Normalizamos la capitalización (primera letra mayúscula)
+    const normalize = (str) =>
+      str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : "";
+
+    setProductoEditando({
+      ...producto,
+      categoria: normalize(categoriaNombre),
+      subcategoria: normalize(subcategoriaNombre),
+    });
   };
 
+  // 💾 Editar producto + refrescar cache
   const handleEditar = async (e) => {
     e.preventDefault();
     try {
       const res = await fetch(`${API_BASE}/products/${productoEditando._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nombre: productoEditando.nombre,
           marca: productoEditando.marca,
           precio: parseFloat(productoEditando.precio),
-          stock: parseInt(productoEditando.stock) || 0,
           imagen: productoEditando.imagen,
           categoria: productoEditando.categoria,
           subcategoria: productoEditando.subcategoria,
@@ -128,41 +112,41 @@ const ProductList = () => {
         }),
       });
 
-      if (!res.ok) throw new Error('Error al actualizar');
+      if (!res.ok) throw new Error("Error al actualizar producto");
 
-      setProductos(prev => prev.map(p => (p._id === productoEditando._id ? productoEditando : p)));
+      alert("✅ Producto actualizado correctamente");
       setProductoEditando(null);
+      await refreshCache();
     } catch (err) {
-      console.error('❌ Error al editar:', err);
-      alert('Hubo un problema al editar el producto');
+      console.error("❌ Error al editar producto:", err);
+      alert("Hubo un problema al editar el producto");
     }
   };
 
+  // ☁️ Subir imagen a Cloudinary
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     const form = new FormData();
-    form.append('file', file);
-    form.append('upload_preset', preset_name); // Tu preset en Cloudinary
-    form.append('cloud_name', cloud_name); // Tu Cloudinary cloud name
+    form.append("file", file);
+    form.append("upload_preset", preset_name);
+    form.append("cloud_name", cloud_name);
 
     try {
       const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
-        method: 'POST',
-        body: form
+        method: "POST",
+        body: form,
       });
-
       const data = await res.json();
 
-      // Actualizar la imagen en el producto editando
-      setProductoEditando(prev => ({
+      setProductoEditando((prev) => ({
         ...prev,
-        imagen: data.secure_url
+        imagen: data.secure_url,
       }));
     } catch (err) {
-      console.error('❌ Error al subir imagen:', err);
-      alert('Error al subir imagen');
+      console.error("❌ Error al subir imagen:", err);
+      alert("Error al subir imagen");
     }
   };
 
@@ -172,33 +156,42 @@ const ProductList = () => {
       <div className="product-list section-admin">
         <h2>Listado de Productos</h2>
 
+        {/* 🔍 Filtros */}
         <div className="filters">
           <input
             type="text"
             placeholder="Buscar por nombre o marca"
             value={filtro.nombre}
-            onChange={(e) => setFiltro(prev => ({ ...prev, nombre: e.target.value }))}
+            onChange={(e) => setFiltro((prev) => ({ ...prev, nombre: e.target.value }))}
           />
+
           <select
             value={filtro.categoria}
-            onChange={(e) => {
-              setFiltro(prev => ({ ...prev, categoria: e.target.value, subcategoria: '' }));
-              setPaginaActual(1);
-            }}
+            onChange={(e) =>
+              setFiltro((prev) => ({ ...prev, categoria: e.target.value, subcategoria: "" }))
+            }
           >
             <option value="">Todas las categorías</option>
-            {categorias.map(cat => <option key={cat}>{cat}</option>)}
+            {categoriasList.map((cat) => (
+              <option key={cat}>{cat}</option>
+            ))}
           </select>
+
           <select
             value={filtro.subcategoria}
-            onChange={(e) => setFiltro(prev => ({ ...prev, subcategoria: e.target.value }))}
+            onChange={(e) =>
+              setFiltro((prev) => ({ ...prev, subcategoria: e.target.value }))
+            }
             disabled={!filtro.categoria}
           >
             <option value="">Todas las subcategorías</option>
-            {subcategorias.map(sub => <option key={sub}>{sub}</option>)}
+            {subcategoriasList.map((sub) => (
+              <option key={sub}>{sub}</option>
+            ))}
           </select>
         </div>
 
+        {/* 📋 Tabla */}
         <table>
           <thead>
             <tr>
@@ -213,32 +206,50 @@ const ProductList = () => {
             </tr>
           </thead>
           <tbody>
-            {productosEnPagina.map(p => (
+            {productosEnPagina.map((p) => (
               <tr key={p._id}>
-                <td><img src={p.imagen} alt={p.nombre} width="50" /></td>
+                <td>
+                  <img src={p.imagen} alt={p.nombre} width="50" />
+                </td>
                 <td>{p.nombre}</td>
                 <td>{p.marca}</td>
                 <td>{formatearCOP(p.precio)}</td>
                 <td>{p.categoria}</td>
                 <td>{p.subcategoria}</td>
-                <td style={{ textWrap: "nowrap" }}>
-                  {p.precioDescuento != null ? formatearCOP(p.precioDescuento) : '-'} / {p.porcentajeDescuento || 0}%
+                <td style={{ whiteSpace: "nowrap" }}>
+                  {p.precioDescuento ? formatearCOP(p.precioDescuento) : "-"} /{" "}
+                  {p.porcentajeDescuento || 0}%
                 </td>
                 <td style={{ display: "flex" }}>
-                  <button className="edit-btn" onClick={() => seleccionarProducto(p)}>✏️</button>
-                  <button className="delete-btn" onClick={() => handleEliminar(p._id)}>🗑️</button>
+                  <button className="edit-btn" onClick={() => seleccionarProducto(p)}>
+                    ✏️
+                  </button>
+                  <button className="delete-btn" onClick={() => handleEliminar(p._id)}>
+                    🗑️
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
 
+        {/* ⏩ Paginación */}
         <div className="pagination">
-          <button onClick={() => cambiarPagina(paginaActual - 1)} disabled={paginaActual === 1}>Anterior</button>
-          <span>Página {paginaActual} de {totalPaginas}</span>
-          <button onClick={() => cambiarPagina(paginaActual + 1)} disabled={paginaActual === totalPaginas}>Siguiente</button>
+          <button onClick={() => cambiarPagina(paginaActual - 1)} disabled={paginaActual === 1}>
+            Anterior
+          </button>
+          <span>
+            Página {paginaActual} de {totalPaginas}
+          </span>
+          <button
+            onClick={() => cambiarPagina(paginaActual + 1)}
+            disabled={paginaActual === totalPaginas}
+          >
+            Siguiente
+          </button>
         </div>
 
+        {/* 🧱 Modal de edición */}
         {productoEditando && (
           <div className="modal">
             <div className="modal-content">
@@ -252,6 +263,7 @@ const ProductList = () => {
                   }
                   placeholder="Nombre"
                 />
+
                 <input
                   type="text"
                   value={productoEditando.marca}
@@ -260,6 +272,7 @@ const ProductList = () => {
                   }
                   placeholder="Marca"
                 />
+
                 <input
                   type="number"
                   value={productoEditando.precio}
@@ -270,7 +283,7 @@ const ProductList = () => {
                 />
 
                 {/* Descuento */}
-                <div style={{ marginBottom: '10px' }}>
+                <div style={{ marginBottom: "10px" }}>
                   <label>
                     <input
                       type="checkbox"
@@ -281,7 +294,7 @@ const ProductList = () => {
                           tieneDescuento: e.target.checked,
                           porcentajeDescuento: e.target.checked
                             ? prev.porcentajeDescuento || 0
-                            : ''
+                            : "",
                         }))
                       }
                     />
@@ -290,26 +303,29 @@ const ProductList = () => {
                 </div>
 
                 {productoEditando.tieneDescuento && (
-                  <div style={{ marginBottom: '10px' }}>
+                  <div style={{ marginBottom: "10px" }}>
                     <label>Porcentaje de descuento (%)</label>
                     <input
                       type="number"
                       min="1"
                       max="100"
-                      value={productoEditando.porcentajeDescuento || ''}
+                      value={productoEditando.porcentajeDescuento || ""}
                       onChange={(e) =>
                         setProductoEditando((prev) => ({
                           ...prev,
-                          porcentajeDescuento: e.target.value
+                          porcentajeDescuento: e.target.value,
                         }))
                       }
                       placeholder="Porcentaje de descuento"
                     />
                     {productoEditando.precio && (
                       <small>
-                        Precio final: {formatearCOP(
+                        Precio final:{" "}
+                        {formatearCOP(
                           productoEditando.precio -
-                          (productoEditando.precio * productoEditando.porcentajeDescuento) / 100
+                          (productoEditando.precio *
+                            productoEditando.porcentajeDescuento) /
+                          100
                         )}
                       </small>
                     )}
@@ -318,15 +334,11 @@ const ProductList = () => {
 
                 {/* Imagen actual + input */}
                 {productoEditando.imagen && (
-                  <div style={{ marginBottom: '10px' }}>
+                  <div style={{ marginBottom: "10px" }}>
                     <img
                       src={productoEditando.imagen}
                       alt="Vista previa"
-                      style={{
-                        width: '100px',
-                        borderRadius: '8px',
-                        marginBottom: '5px'
-                      }}
+                      style={{ width: "100px", borderRadius: "8px", marginBottom: "5px" }}
                     />
                   </div>
                 )}
@@ -335,42 +347,45 @@ const ProductList = () => {
                 {/* Categoría */}
                 <select
                   value={productoEditando.categoria}
-                  onChange={(e) => {
-                    const nuevaCategoria = e.target.value;
+                  onChange={(e) =>
                     setProductoEditando((prev) => ({
                       ...prev,
-                      categoria: nuevaCategoria,
-                      subcategoria: '' // Reiniciar subcategoría
-                    }));
-                  }}
+                      categoria: e.target.value,
+                      subcategoria: "",
+                    }))
+                  }
                 >
                   <option value="">Selecciona categoría</option>
-                  {Object.keys(categoriasData).map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
+                  {categoriasList.map((cat) => {
+                    const normalizedCat = cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
+                    return (
+                      <option key={normalizedCat} value={normalizedCat}>
+                        {normalizedCat}
+                      </option>
+                    );
+                  })}
                 </select>
 
-                {/* Subcategoría */}
                 <select
                   value={productoEditando.subcategoria}
                   onChange={(e) =>
                     setProductoEditando((prev) => ({
                       ...prev,
-                      subcategoria: e.target.value
+                      subcategoria: e.target.value,
                     }))
                   }
                   disabled={!productoEditando.categoria}
                 >
                   <option value="">Selecciona subcategoría</option>
-                  {(categoriasData[productoEditando.categoria] || []).map((sub) => (
-                    <option key={sub} value={sub}>
-                      {sub}
-                    </option>
-                  ))}
+                  {(categoriasData[productoEditando.categoria] || []).map((sub) => {
+                    const normalizedSub = sub.charAt(0).toUpperCase() + sub.slice(1).toLowerCase();
+                    return (
+                      <option key={normalizedSub} value={normalizedSub}>
+                        {normalizedSub}
+                      </option>
+                    );
+                  })}
                 </select>
-
                 <button type="submit">Guardar</button>
                 <button type="button" onClick={() => setProductoEditando(null)}>
                   Cancelar
