@@ -258,7 +258,63 @@
   }
 
 
-  .mobile-menu {
-    display: flex;
-  }
+/* === MOBILE MENU === */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 90vw;
+  height: 100vh;
+  height: 100dvh; /* soporta altura dinámica en móviles */
+  background: #fff;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 20px;
+  z-index: 1000;
+
+  /* 👇 Clave: empieza fuera de la pantalla (a la izquierda) */
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Cuando está abierto */
+.mobile-menu.open {
+  transform: translateX(0);
+}
+
+/* Asegura que el botón cerrar quede arriba */
+.close-menu {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #E92B63;
+  cursor: pointer;
+  margin-bottom: 16px;
+  z-index: 1001;
+}
+
+/* Contenedor de categorías */
+.mobile-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Fix del backdrop (cubrir pantalla completa detrás) */
+.menu-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  opacity: 1;
+}
 }
