@@ -70,14 +70,14 @@ h2 {
   gap: 6px;
 }
 
-.subcategory-list {
+.subcategory-list-admin {
   list-style: none;
   padding: 0.5rem 0 0 0.5rem;
   margin-top: 0.5rem;
   border-top: 1px solid #e5e7eb;
 }
 
-.subcategory-list li {
+.subcategory-list-admin li {
   display: flex;
   justify-content: space-between;
   align-items: center;

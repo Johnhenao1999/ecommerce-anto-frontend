@@ -212,7 +212,7 @@ const Categories = () => {
                 </div>
               </div>
 
-              <ul className="subcategory-list">
+              <ul className="subcategory-list-admin">
                 {cat.subcategorias.length > 0 ? (
                   cat.subcategorias.map((sub) => (
                     <li key={sub._id}>
