@@ -51,32 +51,55 @@ const OrdersPanel = () => {
 
   // 🟢 Enviar mensaje por WhatsApp
   const enviarMensajeWhatsApp = (orden) => {
-    const { cliente, items, total } = orden;
+    const { cliente, items, total, codigoDescuento, descuentoAplicado = 0, descuentoOriginal } = orden;
 
+    // 🧾 Detalle del pedido
     const detalle = items.map(
       (item) => `• ${item.nombre} x${item.cantidad} - $${item.precio.toLocaleString("es-CO")}`
     ).join("\n");
 
+    // 💰 Cálculo de totales
+    const totalOriginal = descuentoOriginal || total + descuentoAplicado;
+    const totalFinal = total;
+    const descuentoInfo = codigoDescuento
+      ? `🎁 *Código de descuento aplicado:* ${codigoDescuento}\n💸 *Descuento:* $${descuentoAplicado.toLocaleString("es-CO")}\n💰 *Total con descuento:* $${totalFinal.toLocaleString("es-CO")}`
+      : `💰 *Total:* $${totalFinal.toLocaleString("es-CO")}`;
+
+    // 💳 Métodos de pago
+    const metodosPago = `
+🏦 *Métodos de pago disponibles:*
+• Nequi: 3166427101 📱
+• Bancolombia (Ahorros): 848-918030-86 💳
+
+📸 *Por favor envía el comprobante de pago por este mismo medio* para preparar tu orden.
+⚠️ *Recuerda:* el pago en efectivo solo está disponible en *Guadalajara de Buga*.
+`;
+
+    // 🧠 Construir mensaje completo
     const mensaje =
-      `Hola ${cliente.nombre} 👋
-Hemos recibido tu pedido con éxito 🛍️
+      `Hola ${cliente.nombre} 👋  
+Hemos recibido tu pedido con éxito 🛍️  
 
 🧾 *Detalle del pedido:*
 ${detalle}
 
-💰 *Total:* $${total.toLocaleString("es-CO")}
 📍 *Dirección:* ${cliente.direccion}, ${cliente.ciudad}
-💳 *Forma de pago:* ${cliente.formaPago}
+💳 *Forma de pago seleccionada:* ${cliente.formaPago}
 
-Muchas gracias por tu compra.💖`;
+${descuentoInfo}
 
-    // Formatea el número del cliente (ej: elimina espacios y agrega código país)
-    const numero = cliente.celular.replace(/\D/g, ""); // quita todo lo que no sea número
-    const numeroCompleto = numero.startsWith("57") ? numero : `57${numero}`; // 🇨🇴
+${metodosPago}
 
+🙏 Muchas gracias por tu compra 💖  
+Tu pedido será preparado una vez confirmemos el pago.`;
+
+    // 📱 Formatear número y abrir WhatsApp
+    const numero = cliente.celular.replace(/\D/g, "");
+    const numeroCompleto = numero.startsWith("57") ? numero : `57${numero}`;
     const url = `https://wa.me/${numeroCompleto}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, "_blank");
   };
+
 
   const filtrarOrdenes = () => {
     if (filtroEstado === "Todos") return orders;
