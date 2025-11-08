@@ -10,7 +10,8 @@ const OrderModal = ({ visible, onClose, onConfirm }) => {
     ciudad: "",
     direccion: "",
     formaPago: "Efectivo",
-    observaciones: "", // 👈 agregado
+    observaciones: "",
+    codigoDescuento: "", // ✅ nuevo campo
   });
 
   const [departamentosFiltrados, setDepartamentosFiltrados] = useState(departamentosData);
@@ -19,6 +20,9 @@ const OrderModal = ({ visible, onClose, onConfirm }) => {
   const [showDeptoList, setShowDeptoList] = useState(false);
   const [showCityList, setShowCityList] = useState(false);
 
+  const [mensajeCodigo, setMensajeCodigo] = useState("");
+  const [codigoValido, setCodigoValido] = useState(false);
+
   useEffect(() => {
     if (form.departamento) {
       const dep = departamentosData.find(
@@ -26,7 +30,7 @@ const OrderModal = ({ visible, onClose, onConfirm }) => {
       );
       setCiudades(dep ? dep.ciudades : []);
       setCiudadesFiltradas(dep ? dep.ciudades : []);
-      setForm((prev) => ({ ...prev, ciudad: "" })); // reset ciudad
+      setForm((prev) => ({ ...prev, ciudad: "" }));
     } else {
       setCiudades([]);
       setCiudadesFiltradas([]);
@@ -61,8 +65,41 @@ const OrderModal = ({ visible, onClose, onConfirm }) => {
     setForm((prev) => ({ ...prev, ciudad: value }));
   };
 
+  // ✅ Validar el código de descuento antes de confirmar
+  const validarCodigo = async () => {
+    if (!form.codigoDescuento.trim()) {
+      setMensajeCodigo("⚠️ Ingresa un código antes de validar.");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/suscriptores/validar/${form.codigoDescuento}`
+      );
+      const data = await res.json();
+
+      if (res.ok && data.valido) {
+        setCodigoValido(true);
+        setMensajeCodigo(`✅ ${data.mensaje}`);
+      } else {
+        setCodigoValido(false);
+        setMensajeCodigo(`❌ ${data.mensaje || "Código no válido"}`);
+      }
+    } catch (error) {
+      console.error("❌ Error al validar código:", error);
+      setMensajeCodigo("❌ Error al validar el código. Intenta nuevamente.");
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Solo se permite confirmar si el código es válido o está vacío
+    if (form.codigoDescuento && !codigoValido) {
+      setMensajeCodigo("⚠️ Valida tu código antes de confirmar el pedido.");
+      return;
+    }
+
     onConfirm(form);
   };
 
@@ -100,6 +137,41 @@ const OrderModal = ({ visible, onClose, onConfirm }) => {
               onChange={(e) => setForm({ ...form, celular: e.target.value })}
               required
             />
+          </div>
+
+          {/* 📦 Código de descuento */}
+          <div className="form-group coupon-group">
+            <label>Código de descuento (opcional)</label>
+            <div className="coupon-input">
+              <input
+                type="text"
+                name="codigoDescuento"
+                placeholder="Ej: ANTO10-AB123"
+                value={form.codigoDescuento}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    codigoDescuento: e.target.value.toUpperCase(),
+                  })
+                }
+              />
+              <button
+                type="button"
+                onClick={validarCodigo}
+                className="btn-validar"
+              >
+                Validar
+              </button>
+            </div>
+            {mensajeCodigo && (
+              <p
+                className={`mensaje-codigo ${
+                  codigoValido ? "valido" : "invalido"
+                }`}
+              >
+                {mensajeCodigo}
+              </p>
+            )}
           </div>
 
           {/* Departamento filtrable */}
@@ -183,7 +255,9 @@ const OrderModal = ({ visible, onClose, onConfirm }) => {
             <select
               name="formaPago"
               value={form.formaPago}
-              onChange={(e) => setForm({ ...form, formaPago: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, formaPago: e.target.value })
+              }
             >
               <option value="Efectivo">Efectivo</option>
               <option value="Nequi">Nequi</option>
@@ -191,13 +265,16 @@ const OrderModal = ({ visible, onClose, onConfirm }) => {
             </select>
           </div>
 
+          {/* Observaciones */}
           <div className="form-group">
             <label>Observaciones (opcional)</label>
             <textarea
               name="observaciones"
-                placeholder="Ej: Comentarios sobre el pedido, tonos preferidos, detalles de entrega o instrucciones especiales 💖"
+              placeholder="Ej: Comentarios sobre el pedido, tonos preferidos o detalles de entrega 💖"
               value={form.observaciones || ""}
-              onChange={(e) => setForm({ ...form, observaciones: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, observaciones: e.target.value })
+              }
               rows={3}
               style={{ resize: "none" }}
             />

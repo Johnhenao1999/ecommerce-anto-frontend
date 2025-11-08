@@ -91,6 +91,17 @@
   color: #E92B63;
 }
 
+.codigo-descuento {
+  background-color: #fff3f5;
+  border: 1px solid #f7c7d0;
+  color: #d43a63;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+
 /* 🟣 Mobile Drawer Experience */
 @media (max-width: 768px) {
   .order-modal {

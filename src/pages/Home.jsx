@@ -9,6 +9,7 @@ import '../styles/home.css';
 import { motion } from 'framer-motion';
 import { useProducts } from '../context/ProductContext';
 import FullScreenLoader from '../components/Loader/FullScreenLoader';
+import NewsletterCampaign from '../components/NewsletterCampaign/NewsletterCampaign';
 
 const Home = () => {
   const { productos, loading } = useProducts();
@@ -65,6 +66,8 @@ const Home = () => {
             className="mas-vendidos-carousel section"
           />
         </motion.section>
+
+        <NewsletterCampaign />
 
         <Footer />
       </main>

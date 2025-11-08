@@ -112,6 +112,7 @@ Muchas gracias por tu compra.💖`;
                   <th>Contacto</th>
                   <th>Ciudad</th>
                   <th>Forma de Pago</th>
+                  <th>Código</th>
                   <th>Total</th>
                   <th>Estado</th>
                   <th>Acciones</th>
@@ -125,6 +126,7 @@ Muchas gracias por tu compra.💖`;
                     <td>{orden.cliente?.celular}</td>
                     <td>{orden.cliente?.ciudad}</td>
                     <td>{orden.cliente?.formaPago}</td>
+                    <td>{orden.codigoDescuento || "-"}</td>
                     <td>${orden.total.toLocaleString("es-CO")}</td>
                     <td>
                       <select

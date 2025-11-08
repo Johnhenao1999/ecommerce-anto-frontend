@@ -28,7 +28,15 @@ const CartPanel = ({ visible, onClose }) => {
 
   const handleConfirmOrder = async (userData) => {
     const payload = {
-      cliente: userData,
+      cliente: {
+        nombre: userData.nombre,
+        celular: userData.celular,
+        departamento: userData.departamento,
+        ciudad: userData.ciudad,
+        direccion: userData.direccion,
+        formaPago: userData.formaPago,
+        observaciones: userData.observaciones,
+      },
       items: cartItems.map(item => ({
         id: item._id,
         nombre: item.nombre,
@@ -36,6 +44,7 @@ const CartPanel = ({ visible, onClose }) => {
         precio: item.precio,
       })),
       total,
+      codigoDescuento: userData.codigoDescuento || null, // ✅ incluir el cupón aquí
     };
 
     try {

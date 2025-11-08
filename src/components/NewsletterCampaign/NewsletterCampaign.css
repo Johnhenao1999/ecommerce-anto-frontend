@@ -1,0 +1,78 @@
+.newsletter-container {
+  background: #fff5f8;
+  padding: 40px 20px;
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  margin: 40px auto;
+  max-width: 500px;
+}
+
+.newsletter-content h2 {
+  font-size: 1.6rem;
+  color: #e86b84;
+  margin-bottom: 8px;
+}
+
+.newsletter-content p {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.newsletter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.newsletter-form input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.newsletter-form input:focus {
+  border-color: #e86b84;
+}
+
+.newsletter-form button {
+  background-color: #e86b84;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.newsletter-form button:hover {
+  background-color: #d55c74;
+}
+
+.newsletter-success {
+  background: #fff;
+  border: 1px solid #e86b84;
+  border-radius: 8px;
+  padding: 20px;
+  color: #333;
+}
+
+.discount-code {
+  font-size: 1.2rem;
+  color: #e86b84;
+  margin-top: 10px;
+}
+
+.newsletter-message {
+  color: #e86b84;
+  font-weight: 500;
+  margin-top: 10px;
+}

@@ -19,6 +19,8 @@
   border-radius: 16px;
   width: 90%;
   max-width: 420px;
+  max-height: 90dvh;
+  overflow: auto;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
   z-index: 999;
   font-family: "Poppins", sans-serif;
@@ -193,6 +195,54 @@ textarea:focus {
   box-shadow: 0 0 0 2px rgba(233, 43, 99, 0.2);
   outline: none;
 }
+
+/* Grupo del cupón */
+.coupon-group {
+  margin-top: 15px;
+}
+
+.coupon-input {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.coupon-input input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+}
+
+.btn-validar {
+  background: #e86b84;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-validar:hover {
+  background: #d45e79;
+}
+
+.mensaje-codigo {
+  margin-top: 6px;
+  font-size: 0.9rem;
+}
+
+.mensaje-codigo.valido {
+  color: #28a745; /* verde éxito */
+}
+
+.mensaje-codigo.invalido {
+  color: #dc3545; /* rojo error */
+}
+
 
 @media (max-width: 767px) {
   .order-modal-content {
