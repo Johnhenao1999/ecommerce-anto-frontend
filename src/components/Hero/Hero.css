@@ -36,10 +36,10 @@
 
 .hero-section img {
   width: 100%;
-  height: auto;
-  object-fit: cover;
+  height: 500px;
+  object-fit: contain;
   display: block;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
   border-radius: 12px;
 }
 
@@ -47,6 +47,8 @@
   color: #091e42;
   font-size: 2rem;
   line-height: 1.2;
+  text-align: left;
+  margin-bottom: 0;
 }
 
 .hero-section-container div span {
@@ -106,6 +108,7 @@
 @media screen and (max-width: 480px) {
   .hero-section-container div h2 {
     font-size: 1.5rem;
+    text-align: center;
   }
 
   .hero-section-container p {

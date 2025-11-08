@@ -1,6 +1,6 @@
 import React from 'react';
 import './Hero.css';
-import bannerImg from '../../assets/banner-anto.png';
+import bannerImg from '../../assets/banner-anto-two.jpeg';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -23,7 +23,7 @@ const Hero = () => {
           <p>
             Para la mujer que convierte el cuidado personal en arte, y cada rutina en un momento de expresión, belleza y equilibrio
           </p>
-          <Link className='button' to="/">Comprar ahora</Link>
+          <Link className='button' to="/categoria/maquillaje">Comprar ahora</Link>
         </motion.div>
 
         <motion.div 

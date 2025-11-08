@@ -251,31 +251,55 @@ const Header = () => {
               <div className="mobile-categories">
                 {categorias.map((cat) => (
                   <div key={cat._id} className="mobile-category-item">
-                    <button
-                      className="category-toggle"
-                      onClick={() =>
-                        setCategoriaActiva(
-                          categoriaActiva === cat._id ? null : cat._id
-                        )
-                      }
-                    >
-                      <span>{cat.nombre}</span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="18"
-                        height="18"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className={`arrow-icon ${categoriaActiva === cat._id ? "open" : ""
-                          }`}
+                    <div className="category-toggle">
+                      {/* 👉 Link directo a la categoría */}
+                      <Link
+                        to={`/categoria/${cat.slug}`}
+                        onClick={() => setIsMenuOpen(false)}
+                        style={{
+                          flex: 1,
+                          textDecoration: "none",
+                          color: "#333",
+                          fontSize: "16px",
+                          fontWeight: "500",
+                        }}
                       >
-                        <polyline points="6 9 12 15 18 9" />
-                      </svg>
-                    </button>
+                        {cat.nombre}
+                      </Link>
 
+                      {/* 🔽 Botón para expandir subcategorías */}
+                      {cat.subcategorias?.length > 0 && (
+                        <button
+                          onClick={() =>
+                            setCategoriaActiva(
+                              categoriaActiva === cat._id ? null : cat._id
+                            )
+                          }
+                          style={{
+                            background: "none",
+                            border: "none",
+                            padding: "6px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="18"
+                            height="18"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className={`arrow-icon ${categoriaActiva === cat._id ? "open" : ""}`}
+                          >
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+
+                    {/* 🔹 Lista de subcategorías */}
                     <div
                       className={`subcategory-list ${categoriaActiva === cat._id ? "show" : ""
                         }`}

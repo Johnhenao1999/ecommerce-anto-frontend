@@ -1,22 +1,35 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Categoria from './pages/Category';
-import ProductoDetalle from './pages/ProductDetail';
-import { useCart } from './context/CartContext';
-import CartPanel from './components/CartPanel/CartPanel';
-import WhatsAppButton from './components/WhatsAppButton/WhatsAppButton';
-import AddProducts from './pages/admin/AddProducts';
-import ProductList from './pages/admin/ProductList';
-import CrearCategoria from './pages/admin/AddCategory';
-import AdminHome from './pages/admin/AdminHome';
-import Login from './pages/Login';
-import Categories from './pages/admin/Categories';
-import RutaProtegida from './components/RutaProtegida';
-import OrdersPanel from './pages/admin/OrdersPanel';
-import { Analytics } from '@vercel/analytics/react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import Home from "./pages/Home";
+import Categoria from "./pages/Category";
+import ProductoDetalle from "./pages/ProductDetail";
+import { useCart } from "./context/CartContext";
+import CartPanel from "./components/CartPanel/CartPanel";
+import WhatsAppButton from "./components/WhatsAppButton/WhatsAppButton";
+import AddProducts from "./pages/admin/AddProducts";
+import ProductList from "./pages/admin/ProductList";
+import CrearCategoria from "./pages/admin/AddCategory";
+import AdminHome from "./pages/admin/AdminHome";
+import Login from "./pages/Login";
+import Categories from "./pages/admin/Categories";
+import RutaProtegida from "./components/RutaProtegida";
+import OrdersPanel from "./pages/admin/OrdersPanel";
+import { Analytics } from "@vercel/analytics/react";
 import { ProductProvider } from "./context/ProductContext";
 import { CategoryProvider } from "./context/CategoryContext";
-import './App.css';
+import "./App.css";
+
+// ⚙️ Componente para renderizar Analytics solo si NO estás en rutas admin/login
+const ConditionalAnalytics = () => {
+  const location = useLocation();
+  const { pathname } = location;
+
+  const isExcluded =
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/login");
+
+  if (isExcluded) return null;
+  return <Analytics />;
+};
 
 function AppContent() {
   const { mostrarCarrito, setMostrarCarrito } = useCart();
@@ -24,6 +37,7 @@ function AppContent() {
   return (
     <>
       <Routes>
+        {/* 🏠 Rutas públicas */}
         <Route path="/" element={<Home />} />
         <Route path="/categoria/:categoriaSlug" element={<Categoria />} />
         <Route path="/categoria/:categoriaSlug/:subcategoriaSlug" element={<Categoria />} />
@@ -37,12 +51,11 @@ function AppContent() {
         <Route path="/admin/categorias" element={<RutaProtegida><Categories /></RutaProtegida>} />
         <Route path="/admin/ordenes" element={<RutaProtegida><OrdersPanel /></RutaProtegida>} />
 
-
         {/* 🔓 Ruta pública */}
         <Route path="/login" element={<Login />} />
       </Routes>
 
-      {/* 👇 Elementos persistentes */}
+      {/* 🛒 Panel del carrito y botón de WhatsApp */}
       <CartPanel visible={mostrarCarrito} onClose={() => setMostrarCarrito(false)} />
       <WhatsAppButton />
     </>
@@ -55,9 +68,9 @@ export default function App() {
       <ProductProvider>
         <CategoryProvider>
           <AppContent />
+          <ConditionalAnalytics />
         </CategoryProvider>
       </ProductProvider>
-      <Analytics />
     </Router>
   );
 }
