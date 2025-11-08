@@ -17,22 +17,20 @@ const ProductList = () => {
   const cloud_name = "djzdunsof";
 
   const categoriasData = categorias.reduce((acc, cat) => {
-    acc[cat.nombre] = cat.subcategorias.map((s) => s.nombre);
+    acc[cat.slug] = cat.subcategorias.map((s) => s.slug);
     return acc;
   }, {});
+
 
   // 🧩 Productos aplanados (por seguridad)
   const productosAplanados = productos.map((p) => ({
     ...p,
-    categoria:
-      typeof p.categoria === "object" ? p.categoria?.nombre || "" : p.categoria || "",
+    categoria: (typeof p.categoria === "object" ? p.categoria?.slug : p.categoria) || "",
     subcategoria:
-      typeof p.subcategoria === "object"
-        ? p.subcategoria?.nombre || ""
-        : p.subcategoria || "",
+      (typeof p.subcategoria === "object" ? p.subcategoria?.slug : p.subcategoria) || "",
   }));
 
-  // 🔍 Filtrado
+
   const productosFiltrados = productosAplanados.filter((p) => {
     return (
       p.nombre.toLowerCase().includes(filtro.nombre.toLowerCase()) &&
@@ -40,6 +38,8 @@ const ProductList = () => {
       (filtro.subcategoria ? p.subcategoria === filtro.subcategoria : true)
     );
   });
+
+
 
   const totalPaginas = Math.ceil(productosFiltrados.length / productosPorPagina);
   const inicio = (paginaActual - 1) * productosPorPagina;
@@ -150,6 +150,17 @@ const ProductList = () => {
     }
   };
 
+  const getCategoryName = (slug) => {
+    const cat = categorias.find((c) => c.slug === slug);
+    return cat ? cat.nombre : slug;
+  };
+
+  const getSubcategoryName = (catSlug, subSlug) => {
+    const cat = categorias.find((c) => c.slug === catSlug);
+    const sub = cat?.subcategorias?.find((s) => s.slug === subSlug);
+    return sub ? sub.nombre : subSlug;
+  };
+
   return (
     <>
       <Navbar />
@@ -172,8 +183,10 @@ const ProductList = () => {
             }
           >
             <option value="">Todas las categorías</option>
-            {categoriasList.map((cat) => (
-              <option key={cat}>{cat}</option>
+            {categorias.map((cat) => (
+              <option key={cat.slug} value={cat.slug}>
+                {cat.nombre}
+              </option>
             ))}
           </select>
 
@@ -185,9 +198,16 @@ const ProductList = () => {
             disabled={!filtro.categoria}
           >
             <option value="">Todas las subcategorías</option>
-            {subcategoriasList.map((sub) => (
-              <option key={sub}>{sub}</option>
-            ))}
+            {(categoriasData[filtro.categoria] || []).map((sub) => {
+              const subcat = categorias
+                .find((c) => c.slug === filtro.categoria)
+                ?.subcategorias.find((s) => s.slug === sub);
+              return (
+                <option key={sub} value={sub}>
+                  {subcat?.nombre || sub}
+                </option>
+              );
+            })}
           </select>
         </div>
 
@@ -214,8 +234,8 @@ const ProductList = () => {
                 <td>{p.nombre}</td>
                 <td>{p.marca}</td>
                 <td>{formatearCOP(p.precio)}</td>
-                <td>{p.categoria}</td>
-                <td>{p.subcategoria}</td>
+                <td>{getCategoryName(p.categoria)}</td>
+                <td>{getSubcategoryName(p.categoria, p.subcategoria)}</td>
                 <td style={{ whiteSpace: "nowrap" }}>
                   {p.precioDescuento ? formatearCOP(p.precioDescuento) : "-"} /{" "}
                   {p.porcentajeDescuento || 0}%
