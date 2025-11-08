@@ -1,15 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Header.css";
 import logo from "../../assets/logo-anto-store.jpeg";
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useCategories } from "../../context/CategoryContext";
+import { useProducts } from "../../context/ProductContext";
 
 const Header = () => {
   const { cantidadTotal, setMostrarCarrito } = useCart();
   const { categorias, loading, error } = useCategories();
+  const { productos } = useProducts();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [categoriaActiva, setCategoriaActiva] = useState(null);
+  const [query, setQuery] = useState("");
+  const [resultados, setResultados] = useState([]);
+
+  const handleBuscar = (e) => {
+    const valor = e.target.value.toLowerCase();
+    setQuery(valor);
+
+    if (valor.trim() === "") {
+      setResultados([]);
+      return;
+    }
+
+    const filtrados = productos.filter((p) =>
+      p.nombre.toLowerCase().includes(valor)
+    );
+    setResultados(filtrados); // máximo 6 resultados
+  };
+
+  useEffect(() => {
+    const handleClickOutside = () => setResultados([]);
+    window.addEventListener("click", handleClickOutside);
+    return () => window.removeEventListener("click", handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -65,6 +90,8 @@ const Header = () => {
               <input
                 type="text"
                 placeholder="¿Qué estás buscando hoy?"
+                value={query}
+                onChange={handleBuscar}
                 style={{
                   width: "100%",
                   padding: "10px 40px 10px 16px",
@@ -96,6 +123,52 @@ const Header = () => {
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
+              {resultados.length > 0 && (
+                <div className="search-results-dropdown"
+                >
+                  {resultados.map((prod) => (
+                    <Link
+                      key={prod._id}
+                      to={`/producto/${prod.slug}`}
+                      onClick={() => {
+                        setQuery("");
+                        setResultados([]);
+                      }}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "10px",
+                        borderBottom: "1px solid #f2f2f2",
+                        textDecoration: "none",
+                        color: "#333",
+                      }}
+                    >
+                      <img
+                        src={prod.imagen}
+                        alt={prod.nombre}
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          borderRadius: "8px",
+                          marginRight: "10px",
+                          objectFit: "cover",
+                        }}
+                      />
+                      <div style={{ flex: 1 }}>
+                        <p
+                          style={{
+                            margin: 0,
+                            fontSize: "14px",
+                            fontWeight: "500",
+                          }}
+                        >
+                          {prod.nombre}
+                        </p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -196,18 +269,16 @@ const Header = () => {
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className={`arrow-icon ${
-                          categoriaActiva === cat._id ? "open" : ""
-                        }`}
+                        className={`arrow-icon ${categoriaActiva === cat._id ? "open" : ""
+                          }`}
                       >
                         <polyline points="6 9 12 15 18 9" />
                       </svg>
                     </button>
 
                     <div
-                      className={`subcategory-list ${
-                        categoriaActiva === cat._id ? "show" : ""
-                      }`}
+                      className={`subcategory-list ${categoriaActiva === cat._id ? "show" : ""
+                        }`}
                     >
                       {cat.subcategorias?.map((sub) => (
                         <Link

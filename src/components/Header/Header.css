@@ -235,6 +235,21 @@
   color: #E92B63;
 }
 
+/* Scrollbar personalizado para los resultados */
+.search-results-dropdown{
+  position: absolute;
+  top: 105%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  overflow: auto;
+  z-index: 1000;
+  max-height: 366px;
+}
+
+
 
 @media (max-width: 768px) {
   .app-header-container {
