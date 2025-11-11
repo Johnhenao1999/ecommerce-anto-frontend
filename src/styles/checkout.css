@@ -254,10 +254,110 @@ textarea:focus {
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 900px) {
   .checkout-container {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    margin: 20px auto;
+    gap: 20px;
   }
 
+  .checkout-form,
   .checkout-summary {
-    margin-top: 20px;
+    width: 100%;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    border-radius: 14px;
+    padding: 20px;
+  }
+
+  .checkout-form h3 {
+    font-size: 18px;
+  }
+
+  .checkout-summary h3 {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .summary-item {
+    gap: 10px;
+  }
+
+  .summary-item img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .item-info h4 {
+    font-size: 13px;
+  }
+
+  .item-info p {
+    font-size: 12px;
+  }
+
+  .subtotal {
+    font-size: 13px;
+  }
+
+  .summary-total {
+    font-size: 15px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn-confirm {
+    padding: 14px;
+    font-size: 15px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* 🔸 Ajuste para pantallas muy pequeñas (celulares <480px) */
+@media (max-width: 480px) {
+  .checkout-container {
+    padding: 8px;
+  }
+
+  .checkout-form,
+  .checkout-summary {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 13px;
+  }
+
+  label {
+    font-size: 12px;
+  }
+
+  .checkout-success {
+    margin: 60px 10px;
+    padding: 28px 20px;
+  }
+
+  .checkout-success h2 {
+    font-size: 22px;
+  }
+
+  .checkout-success p {
+    font-size: 14px;
+  }
+
+  .checkout-success .success-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+  }
+
+  .checkout-success .btn-home {
+    width: 100%;
   }
 }

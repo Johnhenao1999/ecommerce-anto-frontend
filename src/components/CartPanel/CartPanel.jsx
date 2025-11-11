@@ -110,7 +110,13 @@ const CartPanel = ({ visible, onClose }) => {
                 <div className="cart-footer">
                   <h3>Total: {formatearCOP(total)}</h3>
                   <div className="cart-actions">
-                    <button className="btn-order" onClick={() => navigate("/checkout")}>
+                    <button
+                      className="btn-order"
+                      onClick={() => {
+                        onClose();
+                        navigate("/checkout");
+                      }}
+                    >
                       Realizar orden
                     </button>
                     <button className="btn-secondary" onClick={onClose}>
