@@ -16,6 +16,7 @@ import OrdersPanel from "./pages/admin/OrdersPanel";
 import { Analytics } from "@vercel/analytics/react";
 import { ProductProvider } from "./context/ProductContext";
 import { CategoryProvider } from "./context/CategoryContext";
+import Checkout from "./pages/Checkout";
 import "./App.css";
 
 // ⚙️ Componente para renderizar Analytics solo si NO estás en rutas admin/login
@@ -42,6 +43,7 @@ function AppContent() {
         <Route path="/categoria/:categoriaSlug" element={<Categoria />} />
         <Route path="/categoria/:categoriaSlug/:subcategoriaSlug" element={<Categoria />} />
         <Route path="/producto/:productoId" element={<ProductoDetalle />} />
+        <Route path="/checkout" element={<Checkout />} />
 
         {/* 🛡️ Rutas protegidas */}
         <Route path="/admin" element={<RutaProtegida><AdminHome /></RutaProtegida>} />

@@ -17,15 +17,31 @@ const Home = () => {
 
   useEffect(() => {
     if (productos.length) {
-      const productosOrdenadosPorFecha = [...productos].sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-      setLatestProducts(productosOrdenadosPorFecha.slice(0, 8));
+      // 🔹 Filtrar solo los que tienen descuento
+      const productosConDescuento = productos.filter((p) => p.tieneDescuento);
 
-      const productosOrdenadosPorPrecio = [...productos].sort(
-        (a, b) => a.precio - b.precio
+      // 🔹 Ordenar por precio dentro de los que tienen descuento
+      const productosOrdenadosPorDescuento = [...productosConDescuento].sort(
+        (a, b) => a.precioDescuento - b.precioDescuento
       );
-      setCheapestProducts(productosOrdenadosPorPrecio.slice(0, 8));
+
+      // 🔹 Si no hay descuentos, mostrar algunos por precio normal
+      const productosFallback = [...productos]
+        .sort((a, b) => a.precio - b.precio)
+        .slice(0, 8);
+
+      setCheapestProducts(
+        productosOrdenadosPorDescuento.length
+          ? productosOrdenadosPorDescuento.slice(0, 8)
+          : productosFallback
+      );
+
+      // 🔹 Productos más nuevos
+      const productosOrdenadosPorFecha = [...productos]
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 8);
+
+      setLatestProducts(productosOrdenadosPorFecha);
     }
   }, [productos]);
 
@@ -37,7 +53,7 @@ const Home = () => {
       <Hero />
       <main>
         <motion.section
-          className="section-destacados"
+          className="section-destacados lanzamiento-carousel"
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -45,8 +61,8 @@ const Home = () => {
         >
           <ProductCarousel
             productos={cheapestProducts}
-            title="RECOMENDADOS PARA TI"
-            className="mas-vendidos-carousel section"
+            title="🎉 LANZAMIENTO OFICIAL – DESCUENTOS POR TIEMPO LIMITADO"
+            className="section"
           />
         </motion.section>
 

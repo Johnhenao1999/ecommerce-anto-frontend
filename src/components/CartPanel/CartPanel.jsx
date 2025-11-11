@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASE } from '../../utils/api';
 import { useCart } from '../../context/CartContext';
-import OrderModal from '../OrderModal/OrderModal';
 import SuccessModal from "../SuccessModal/SuccessModal";
 import { formatearCOP } from '../../utils/format';
+import { useNavigate } from "react-router-dom";
 import './CartPanel.css';
 
 const CartPanel = ({ visible, onClose }) => {
@@ -11,6 +11,7 @@ const CartPanel = ({ visible, onClose }) => {
   const [showModal, setShowModal] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [formaPagoCliente, setFormaPagoCliente] = useState("");
+  const navigate = useNavigate();
 
   const total = cartItems.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
 
@@ -109,7 +110,7 @@ const CartPanel = ({ visible, onClose }) => {
                 <div className="cart-footer">
                   <h3>Total: {formatearCOP(total)}</h3>
                   <div className="cart-actions">
-                    <button className="btn-order" onClick={() => setShowModal(true)}>
+                    <button className="btn-order" onClick={() => navigate("/checkout")}>
                       Realizar orden
                     </button>
                     <button className="btn-secondary" onClick={onClose}>
@@ -122,12 +123,6 @@ const CartPanel = ({ visible, onClose }) => {
           </div>
         </>
       )}
-
-      <OrderModal
-        visible={showModal}
-        onClose={() => setShowModal(false)}
-        onConfirm={handleConfirmOrder}
-      />
 
       <SuccessModal
         visible={showSuccess}

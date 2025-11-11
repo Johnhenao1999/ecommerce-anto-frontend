@@ -74,3 +74,32 @@
     background-color: #9393933b; /* Mismo color del texto o el que quieras */
   }
   
+  .lanzamiento-carousel {
+  background: linear-gradient(135deg, #ffe3ec 0%, #fff0f5 100%);
+  padding: 60px 0;
+  border-top: 4px solid #e92b63;
+  position: relative;
+}
+
+.lanzamiento-carousel::before {
+  content: "🎀 CAMPAÑA";
+  position: absolute;
+  top: 12px;
+  left: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e92b63;
+  letter-spacing: 0.5px;
+  background: #fff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.lanzamiento-carousel h2,
+.lanzamiento-carousel h3 {
+  color: #e92b63;
+  text-align: center;
+  margin-bottom: 24px;
+  font-weight: 700;
+}
