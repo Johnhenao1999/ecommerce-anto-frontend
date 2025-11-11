@@ -70,9 +70,22 @@ const ProductoDetalle = () => {
           </h1>
           <p>{producto.descripcion}</p>
 
-          <strong className="precio">
-            {formatearCOP(producto.precio)}
-          </strong>
+          {/* Precio y descuento */}
+          <div className="precio-container">
+            {producto.tieneDescuento ? (
+              <>
+                <p className="precio-anterior">{formatearCOP(producto.precio)}</p>
+                <p className="precio-descuento">{formatearCOP(producto.precioDescuento)}</p>
+                {producto.porcentajeDescuento > 0 && (
+                  <span className="badge-descuento">
+                    -{producto.porcentajeDescuento}%
+                  </span>
+                )}
+              </>
+            ) : (
+              <p className="precio-normal">{formatearCOP(producto.precio)}</p>
+            )}
+          </div>
 
           {/* Estado del stock */}
           <p className="disponibilidad">
