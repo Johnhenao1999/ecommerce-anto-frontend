@@ -53,27 +53,46 @@ const OrdersPanel = () => {
   const enviarMensajeWhatsApp = (orden) => {
     const { cliente, items, total } = orden;
 
-    const detalle = items.map(
-      (item) => `• ${item.nombre} x${item.cantidad} - $${item.precio.toLocaleString("es-CO")}`
-    ).join("\n");
+    // 🧾 Detalle del pedido
+    const detalle = items
+      .map(
+        (item) =>
+          `• ${item.nombre} x${item.cantidad} - $${item.precio.toLocaleString("es-CO")}`
+      )
+      .join("\n");
 
-    const mensaje =
-      `Hola ${cliente.nombre} 👋
-Hemos recibido tu pedido con éxito 🛍️
+    // 💰 Total del pedido
+    const totalInfo = `💰 *Total:* $${total.toLocaleString("es-CO")}`;
+
+    // 💳 Métodos de pago
+    const metodosPago = `
+🏦 *Métodos de pago disponibles:*
+• Nequi: 3164077327 📱  
+• Bancolombia (Ahorros): 848-918030-86 💳  
+
+📸 *Por favor envía el comprobante de pago por este mismo medio* para preparar tu orden.  
+⚠️ *Recuerda:* el pago en efectivo solo está disponible en *Guadalajara de Buga*.`;
+
+    // 🧠 Mensaje completo
+    const mensaje = `Hola ${cliente.nombre} 👋  
+Hemos recibido tu pedido con éxito 🛍️  
 
 🧾 *Detalle del pedido:*
 ${detalle}
 
-💰 *Total:* $${total.toLocaleString("es-CO")}
-📍 *Dirección:* ${cliente.direccion}, ${cliente.ciudad}
-💳 *Forma de pago:* ${cliente.formaPago}
+📍 *Dirección:* ${cliente.direccion}, ${cliente.ciudad}  
+💳 *Forma de pago seleccionada:* ${cliente.formaPago}  
 
-Muchas gracias por tu compra.💖`;
+${totalInfo}
 
-    // Formatea el número del cliente (ej: elimina espacios y agrega código país)
-    const numero = cliente.celular.replace(/\D/g, ""); // quita todo lo que no sea número
-    const numeroCompleto = numero.startsWith("57") ? numero : `57${numero}`; // 🇨🇴
+${metodosPago}
 
+🙏 Muchas gracias por tu compra 💖  
+Tu pedido será preparado una vez confirmemos el pago.`;
+
+    // 📱 Formatear número y abrir WhatsApp
+    const numero = cliente.celular.replace(/\D/g, ""); // elimina todo lo que no sea número
+    const numeroCompleto = numero.startsWith("57") ? numero : `57${numero}`; // agrega prefijo si falta
     const url = `https://wa.me/${numeroCompleto}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, "_blank");
   };
