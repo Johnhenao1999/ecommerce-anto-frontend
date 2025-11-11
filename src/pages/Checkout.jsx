@@ -258,12 +258,25 @@ const Checkout = () => {
                             <select
                                 value={form.formaPago}
                                 onChange={(e) => setForm({ ...form, formaPago: e.target.value })}
+                                required
                             >
-                                <option value="Efectivo">Efectivo</option>
+                                {/* 🔹 Mostrar “Efectivo” solo si la ciudad es Guadalajara de Buga */}
+                                {form.ciudad.trim().toLowerCase() === "guadalajara de buga" && (
+                                    <option value="Efectivo">Efectivo</option>
+                                )}
+
                                 <option value="Nequi">Nequi</option>
-                                <option value="Daviplata">Daviplata</option>
+                                <option value="Daviplata">Bancolombia</option>
                             </select>
+
+                            {/* 🔹 Mensaje de ayuda UX */}
+                            {form.ciudad.trim().toLowerCase() !== "guadalajara de buga" && (
+                                <small style={{ fontSize: "12px", color: "#666" }}>
+                                    El pago en efectivo solo está disponible para envíos dentro de Guadalajara de Buga
+                                </small>
+                            )}
                         </div>
+
 
                         {/* Observaciones */}
                         <div className="form-group">
