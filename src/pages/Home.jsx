@@ -53,7 +53,7 @@ const Home = () => {
       <Hero />
       <main>
         <motion.section
-          className="section-destacados lanzamiento-carousel"
+          className="section-destacados"
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -61,7 +61,7 @@ const Home = () => {
         >
           <ProductCarousel
             productos={cheapestProducts}
-            title="🎉 LANZAMIENTO OFICIAL – DESCUENTOS POR TIEMPO LIMITADO"
+            title="PRODUCTOS DESTACADOS"
             className="section"
           />
         </motion.section>
